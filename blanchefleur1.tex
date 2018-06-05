@@ -1,6 +1,9 @@
 \documentclass[a4paper,draft]{article}
 
 \usepackage{amsmath,amsthm,latexsym,eufrak,amssymb}
+\def\rmd{\mathrm{d}}
+\def\rme{\mathrm{e}}
+\def\PE{\mathbb{E}}
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{proposition}[theorem]{Proposition}
@@ -17,11 +20,11 @@
 \thanks{All the authors
 were supported
 by The Alan Turing Institute, London under the EPSRC grant EP/N510129/1.
-M. R. also enjoyed the support of the NKFIH (National Research, Development and Innovation Office, Hungary) 
+M. R. also enjoyed the support of the NKFIH (National Research, Development and Innovation Office, Hungary)
 grant KH 126505 and the ``Lend\"ulet'' grant LP 2015-6 of the
 Hungarian Academy of Sciences.}}
 
-\author{M. Barkhagen \and N. H. Chau \and \'E. Moulines \and 
+\author{M. Barkhagen \and N. H. Chau \and \'E. Moulines \and
 M. R\'asonyi \and S. Sabanis \and Y. Zhang}
 
 \date{\today}
@@ -36,13 +39,13 @@ M. R\'asonyi \and S. Sabanis \and Y. Zhang}
 
 We are concerned with sampling from the distribution $\pi$ defined by
 $$
-\pi(A):=\int_A e^{-U(x)}\, dx/\int_{\mathbb{R}^d} e^{-U(x)}\, dx,\
+\pi(A):=\int_A \rme^{-U(x)}\, \rmd x/\int_{\mathbb{R}^d} \rme^{-U(x)}\, \rmd x,\
 A\in\mathcal{B}(\mathbb{R}^d),
 $$
-where $\mathcal{B}(\mathbb{R}^d)$ denotes the Boreliens of $\mathbb{R}^d$
+where $\mathcal{B}(\mathbb{R}^d)$ denotes the Borel sigma-field
 and $U:\mathbb{R}^d\to\mathbb{R}_+$ is continuously
 differentiable. We assume, for simplicity,
-that $U(0)=0$. The sampling algorithms will be based on 
+that $U(0)=0$. The sampling algorithms will be based on
 the derivative $h:=\nabla U$ and on its noisy observations.
 We only treat the case of unbiased observations but a bias
 could also easily be incorporated.
@@ -51,32 +54,32 @@ could also easily be incorporated.
 
 We are working on a probability space $(\Omega,\mathcal{F},P)$.
 Expectation of
-a random variable $X$ will be denoted by $EX$.
+a random variable $X$ will be denoted by $\PE[X]$.
 For any $m\geq 1$, for any $\mathbb{R}^m$-valued random variable $X$ and for any $1\leq p<\infty$, let us set
-$\Vert X\Vert_p:=\sqrt[p]{E|X|^p}$. We denote by $L^p$ the set of $X$ with $\Vert X\Vert_p<\infty$.
+$\Vert X\Vert_p:=\sqrt[p]{\PE[|X|^p]}$. We denote by $L^p$ the set of $X$ with $\Vert X\Vert_p<\infty$.
 The indicator function of a set $A$ will be denoted by $1_A$.
- 
+
 
 Let $\theta_0$ be an $\mathbb{R}^d$-valued random variable, representing
 the initial value of the procedures we consider.
 Let $H:\mathbb{R}^d\times\mathbb{R}^m\to\mathbb{R}^d$ be a measurable
-function, let $X_t$, $t\in\mathbb{Z}$ be an $\mathbb{R}^m$-valued (strict sense) stationary process. 
+function, let $X_t$, $t\in\mathbb{Z}$ be an $\mathbb{R}^m$-valued (strict sense) stationary process.
 Let $\xi_t$, $t\in\mathbb{N}$ be an independent
 sequence of standard Gaussian random variables. We assume that $\theta_0$, $(X_t)_{t\in\mathbb{Z}}$,
-$(\xi_t)_{t\in\mathbb{N}}$ are independent. 
+$(\xi_t)_{t\in\mathbb{N}}$ are independent.
 
-For each $\lambda>0$, define the $\mathbb{R}^d$-valued 
+For each $\lambda>0$, define the $\mathbb{R}^d$-valued
 random process $\theta^{\lambda}_t$, $t\in\mathbb{N}$ by recursion:
 \begin{equation}\label{nab}
 \theta^{\lambda}_0:=\theta_0,\quad \theta^{\lambda}_{t+1}:=\theta^{\lambda}_t-\lambda H(\theta^{\lambda}_t,X_{t+1})+\sqrt{2\lambda}\xi_{t+1}.
 \end{equation}
 
-We assume that $h(\theta)=E[H(\theta,X_0)]$, $\theta\in\mathbb{R}^d$ 
+We assume that $h(\theta)=E[H(\theta,X_0)]$, $\theta\in\mathbb{R}^d$
 (in particular, the expectations are finite), and go on
 defining the ``averaged'' version of \eqref{nab},
 \begin{equation}\label{aver}
-\overline{\theta}^{\lambda}_0:=\theta_0,\quad 
-\overline{\theta}^{\lambda}_{t+1}:=\overline{\theta}^{\lambda}_t-\lambda 
+\overline{\theta}^{\lambda}_0:=\theta_0,\quad
+\overline{\theta}^{\lambda}_{t+1}:=\overline{\theta}^{\lambda}_t-\lambda
 h(\overline{\theta}^{\lambda}_t)+\sqrt{2\lambda}\xi_{t+1}.
 \end{equation}
 
@@ -86,19 +89,19 @@ $$
 $$
 Furthermore, $X_0\in L^2$.
 \end{assumption}
- 
+
 Under Assumption \ref{lip}, $h$ is also Lipschitz-continuous. Next, monotonicity conditions are required for $H$. Scalar product in $\mathbb{R}^d$
 is denoted by $\langle \cdot,\cdot\rangle$.
 
 \begin{assumption}\label{diss} There is a function $a:\mathbb{R}^m\to\mathbb{R}_+$ such that, for all $\theta_1,\theta_2\in\mathbb{R}^d$ and $x\in\mathbb{R}^m$,
 \begin{equation}\label{montre}
-\langle \theta_1-\theta_2,H(\theta_1,x)-H(\theta_2,x)\rangle\geq 
+\langle \theta_1-\theta_2,H(\theta_1,x)-H(\theta_2,x)\rangle\geq
 a(x)[|\theta_1-\theta_2|^2 + |H(\theta_1,x)-H(\theta_2,x)|^2]
 \end{equation}
 and $Ea(X_0)>0$.
 \end{assumption}
 
-This assumption clearly holds if, for all $x$, $\theta\to H(\theta,x)$ 
+This assumption clearly holds if, for all $x$, $\theta\to H(\theta,x)$
 is the derivative of a strongly convex function.
 IN THIS FIRST DRAFT WE ASSUME $a(\cdot)$ TO BE CONSTANT. THIS CAN BE
 RELAXED MODULO SOME EXTRA WORK.
@@ -123,19 +126,19 @@ for each $n\in\mathbb{N}$. Define also $\mathcal{F}_n:=\mathcal{G}_n\vee
 
 
 
-Our aim is to estimate 
+Our aim is to estimate
 $\Vert\theta^{\lambda}_t-\overline{\theta}^{\lambda}_t\Vert_2$,
-uniformly in $t$. 
+uniformly in $t$.
 
 \begin{example} {\rm Let $H(\theta,x):=\theta+x$ and let $X_n$, $n\in\mathbb{N}$
 be an independent sequence of standard Gaussian random variables,
 independent of $\xi_n$, $n\in\mathbb{N}$. Take $\theta_0:=0$.
-It is straightforward to check that 
+It is straightforward to check that
 $$
 \overline{\theta}^{\lambda}_t-\theta^{\lambda}_t=\sum_{j=0}^{t-1}
 (1-\lambda)^j \lambda X_{t-j}
 $$
-which clearly has variance 
+which clearly has variance
 $$
 \sum_{j=0}^{t-1}(1-\lambda)^{2j}\lambda^2=\frac{\lambda(1-(1-\lambda)^{2t})}
 {2-\lambda}.
@@ -151,9 +154,9 @@ factor (which does not seem to matter in practice).}
 \end{example}
 
 \begin{theorem}\label{main} Let $X$ be conditionally $L$-mixing
-of order $(2,4)$ with respect to $(\mathcal{G}_t,\mathcal{G}_t^+)$. 
+of order $(2,4)$ with respect to $(\mathcal{G}_t,\mathcal{G}_t^+)$.
 Let Assumptions \ref{lip}, \ref{diss} and
-\ref{opa} hold. Then there exists $C^{\circ}>0$ such that 
+\ref{opa} hold. Then there exists $C^{\circ}>0$ such that
 \begin{equation}
 ||\theta^{\lambda}_t-\overline{\theta}^{\lambda}_t||_2
 \leq C^{\circ}\sqrt{\lambda}|\ln(\lambda)|^{3/2},\ t\in\mathbb{N}.
@@ -165,14 +168,14 @@ to the problem of sampling from $\pi$. Let $W_2$
 denote the Wasserstein metric of order $2$, see e.g. \cite{villani}
 for more information about this distance.
 
-\begin{corollary}\label{dros} For each $\kappa>0$, there exist constants $c_1,c_2>0$ such that, for each 
+\begin{corollary}\label{dros} For each $\kappa>0$, there exist constants $c_1,c_2>0$ such that, for each
 $\epsilon>0$ one has
 $$
 W_2(\mathrm{Law}(\theta^{\lambda}_t),\pi)\leq \epsilon
 $$
-whenever 
+whenever
 \begin{equation}\label{sharp}
-\lambda\leq  c_1\epsilon^{2+\kappa}\mbox{ and }t\geq 
+\lambda\leq  c_1\epsilon^{2+\kappa}\mbox{ and }t\geq
 \frac{c_2}{\epsilon^{2+\kappa}}\ln(1/\epsilon).
 \end{equation}
 \end{corollary}
@@ -181,19 +184,19 @@ whenever
 some of the results in \cite{raginsky} in certain cases, compare
 also to \cite{xu}.
 In \cite{raginsky} the monotonicity assumption \eqref{montre} is not
-imposed, only a dissipativity condition is required and a more 
-general recursive scheme is investigated. However, the input 
-sequence $X_t$, $t\in\mathbb{N}$ is assumed i.i.d. 
+imposed, only a dissipativity condition is required and a more
+general recursive scheme is investigated. However, the input
+sequence $X_t$, $t\in\mathbb{N}$ is assumed i.i.d.
 In that setting, Theorem of
 \cite{raginsky} applies to \eqref{nab} (with the choice $\delta=0$,
 $\beta=1$, $d$ fixed, see also the last paragraph of Subsection 1.1
 of \cite{raginsky}), and we get that
 $$
 W_2(\mathrm{Law}(\theta^{\lambda}_t),\pi)\leq \epsilon
-$$  
-holds whenever 
-$\lambda\leq c_3(\epsilon/\ln(1/\epsilon))^4$ and 
-$t\geq \frac{c_4}{\epsilon^4}\ln^5(1/\epsilon)$ with some $c_3,c_4>0$. 
+$$
+holds whenever
+$\lambda\leq c_3(\epsilon/\ln(1/\epsilon))^4$ and
+$t\geq \frac{c_4}{\epsilon^4}\ln^5(1/\epsilon)$ with some $c_3,c_4>0$.
 Our results provide the sharper estimates \eqref{sharp}. The main
 purpose of the present note is to provide results for the case where
 $X_t$, $t\in\mathbb{N}$ has dependencies, but \eqref{sharp} is
@@ -205,18 +208,18 @@ new even in the particular case where $X_t$, $t\in\mathbb{N}$ are i.i.d.}
 $L$-mixing processes and random fields
 were introduced in \cite{laci1}. They proved to be useful in
 tackling difficult problems of system identification. In
-\cite{4} the related concept of \emph{conditional} $L$-mixing 
+\cite{4} the related concept of \emph{conditional} $L$-mixing
 was introduced in order to treat fixed gain recursive estimators
 with discontinous updating functions. Although the function $H$
-is assumed continuous in the present article, it seems that 
+is assumed continuous in the present article, it seems that
 the right setting for the analysis of \eqref{nab} is provided
 by conditionally $L$-mixing random fields, which we will define below.
 
 We assume that the probability space is equipped
 with a discrete-time filtration $\mathcal{H}_n$, $n\in\mathbb{N}$ as well as with a decreasing sequence of sigma-fields $\mathcal{H}_n^+$, $n\in\mathbb{N}$ such that $\mathcal{H}_n$ is
-independent of $\mathcal{H}_n^+$, for all $n$. 
+independent of $\mathcal{H}_n^+$, for all $n$.
 
-Fix an integer $d\geq 1$ and let $D\subset \mathbb{R}^d$ be a set of parameters. A measurable function 
+Fix an integer $d\geq 1$ and let $D\subset \mathbb{R}^d$ be a set of parameters. A measurable function
 $X:\mathbb{N}\times D\times\Omega\to\mathbb{R}^m$ is called a random field. We will drop dependence on $\omega\in\Omega$ and
 use the notation $X_t(\theta)$, $t\in\mathbb{N}$, $\theta\in D$. A random
 process $X_t$, $t\in\mathbb{N}$ corresponds to a random field where $D$
@@ -233,38 +236,38 @@ smaller than or equal to any other such bound, see e.g. Proposition VI.1.1. of \
 
 
 Let $X_t(\theta)$, $t\in\mathbb{N}$, $\theta\in D$ be a random field
-bounded in $L^r$. 
+bounded in $L^r$.
 Define, for each $n\in\mathbb{N}$,
 \begin{eqnarray*}
-	M^{n}_r(X) &:=& \mathrm{ess}\sup_{\theta\in D}\sup_{t \in\mathbb{N}} 
+	M^{n}_r(X) &:=& \mathrm{ess}\sup_{\theta\in D}\sup_{t \in\mathbb{N}}
 	E^{1/r}[|X_{n+t}(\theta)|^r\big\vert\mathcal{H}_n],\\
-	\gamma^{n}_r(\tau,X)&:=& \mathrm{ess}\sup_{\theta\in D}\sup_{t\geq\tau} 
+	\gamma^{n}_r(\tau,X)&:=& \mathrm{ess}\sup_{\theta\in D}\sup_{t\geq\tau}
 	E^{1/r}[|X_{n+t}(\theta)-E[X_{n+t}(\theta)\vert \mathcal{H}_{n+t-\tau}^+\vee \mathcal{H}_n]|^r\big\vert
 	\mathcal{H}_n],\ \tau\geq 1,\\
 	\Gamma^{n}_r(X) &:=&\sum_{\tau= 1}^{\infty}\gamma^{n}_r(\tau,X).
 \end{eqnarray*}
-When necessary, we will also use the notations $M^{n}_r(X,D)$, 
+When necessary, we will also use the notations $M^{n}_r(X,D)$,
 $\gamma^{n}_r(\tau,X,D)$, $\Gamma^{n}_r(X,D)$ to signal dependence of
 these quantities on the domain $D$ which may vary.
 
 For some $r,p\geq 1$, we call $X_t(\theta)$, $t\in\mathbb{N}$, $\theta\in D$
-\emph{uniformly {conditionally} $L$-mixing of order $(r,p)$} (UCLM-$(r,p)$) 
-with respect to $(\mathcal{H}_t,\mathcal{H}_t^+)$ if 
-it is $L^r$-bounded; $X_t(\theta)$, $t\in\mathbb{N}$ is adapted to 
-$\mathcal{F}_t$, $t\in\mathbb{N}$ 
-for all $\theta\in D$ 
+\emph{uniformly {conditionally} $L$-mixing of order $(r,p)$} (UCLM-$(r,p)$)
+with respect to $(\mathcal{H}_t,\mathcal{H}_t^+)$ if
+it is $L^r$-bounded; $X_t(\theta)$, $t\in\mathbb{N}$ is adapted to
+$\mathcal{F}_t$, $t\in\mathbb{N}$
+for all $\theta\in D$
 and the sequences  $M^n_r(X)$, $\Gamma^n_r(X)$, $n\in\mathbb{N}$
 are bounded in $L^p$. In the case of stochastic processes (when $D$ is a singleton)
-the terminology ``conditionally $L$-mixing process of order $(r,p)$'' will be used. 
+the terminology ``conditionally $L$-mixing process of order $(r,p)$'' will be used.
 
 
 The following maximal inequality is pivotal for our arguments.
 
 \begin{theorem}\label{estim} Let Assumption \ref{opa} be in force.
-Fix $r>2$, $n\in \mathbb{N}$. 
-Let $W_t$, $t\in\mathbb{N}$ be a conditionally L-mixing process of order 
-$(r,1)$ w.r.t. $(\mathcal{H}_t,\mathcal{H}_t^+)$, satisfying 
-$E[W_t\vert\mathcal{H}_n]=0$ a.s. for all {$t\geq n$}. 
+Fix $r>2$, $n\in \mathbb{N}$.
+Let $W_t$, $t\in\mathbb{N}$ be a conditionally L-mixing process of order
+$(r,1)$ w.r.t. $(\mathcal{H}_t,\mathcal{H}_t^+)$, satisfying
+$E[W_t\vert\mathcal{H}_n]=0$ a.s. for all {$t\geq n$}.
 Let $m >n$ and let $b_t$, $n< t\leq m$ be deterministic numbers. Then we have
 \begin{equation}\label{mandrill}
 E^{1/r}\left[ \sup_{n < t \le m} \left| \sum_{s = n+1}^{t} b_s W_s \right|^r \big\vert\mathcal{H}_n \right]
@@ -275,13 +278,13 @@ almost surely, where $C_r$ is a deterministic constant depending only on $r$ but
 
 For each $R\geq 0$
 we denote $B(R):=\{x\in\mathbb{R}^d:\, |x|\leq R\}$, the closed
-ball of radius $R$ around the origin. 
+ball of radius $R$ around the origin.
 
 \begin{lemma}\label{below} Let $X_t$, $t\in\mathbb{N}$ be UCLM-$(r,p)$. Let Assumption \ref{lip} hold true. Then,
 for each $j\in\mathbb{N}$, the random field $H(\theta,X_t)$,
 $t\in\mathbb{N}$, $\theta\in B(j)$ is UCLM-$(r,p)$.
 \end{lemma}
-\begin{proof} Notice that 
+\begin{proof} Notice that
 \begin{eqnarray*}
 |H(\theta,x)|\leq |H(\theta,x)-H(\theta,0)|+
 |H(\theta,0)-H(0,0)|+ |H(0,0)| &\leq&\\
@@ -289,7 +292,7 @@ L|x| + L|\theta|+|H(0,0)|.
 \end{eqnarray*}
 Let $\theta\in B(j)$. Then, for $k\geq n$,
 $$
-E[|H(\theta,X_k)|^r\vert\mathcal{H}_n]\leq 
+E[|H(\theta,X_k)|^r\vert\mathcal{H}_n]\leq
 C(r)[E[|X_k|^r\vert\mathcal{H}_n]+j^r+1]
 $$
 for some $C(r)>0$ hence
@@ -300,7 +303,7 @@ We also have
 \begin{eqnarray*}
 E^{1/r}[|H(\theta,X_k)-E[H(\theta,X_k)\vert\mathcal{H}_n\vee\mathcal{H}_{n-\tau}^+]|^r\vert\mathcal{H}_n] &\leq&\\
 2E^{1/r}[|H(\theta,X_k)-H(\theta,E[X_k\vert\mathcal{H}_n\vee\mathcal{H}_{n-\tau}^+])|^r\vert\mathcal{H}_n] &\leq&\\
-2L E^{1/r}[|X_k-E[X_k\vert\mathcal{H}_n\vee\mathcal{H}_{n-\tau}^+]|^r 
+2L E^{1/r}[|X_k-E[X_k\vert\mathcal{H}_n\vee\mathcal{H}_{n-\tau}^+]|^r
 \vert\mathcal{H}_n], & &
 \end{eqnarray*}
 using Lemma \ref{mall}, which implies
@@ -337,7 +340,7 @@ of the Markov chain $\overline{\theta}_t$, $t\in\mathbb{N}$.
 
 \begin{lemma}\label{ghibli}
 Let $\theta_0,\theta_0'\in L^2$ be random variables and $\xi$ standard
-Gaussian, independent of $\sigma(\theta_0,\theta_0')$. 
+Gaussian, independent of $\sigma(\theta_0,\theta_0')$.
 Then there is $\rho>0$
 such that, defining
 $$
@@ -359,12 +362,12 @@ holds for all $x\in\mathbb{R}^d$.
 \end{lemma}
 
 Let us fix $\tilde{c}$ as in Lemma \ref{tilda} and define $\tilde{V}(x):=
-\exp(\tilde{c}x^2)$, $x\in\mathbb{R}^d$. 
+\exp(\tilde{c}x^2)$, $x\in\mathbb{R}^d$.
 
 
-\begin{lemma}\label{toranaga} Let $\chi_n$, $n\geq 1$ be such that 
+\begin{lemma}\label{toranaga} Let $\chi_n$, $n\geq 1$ be such that
 $$
-\sup_{n\geq 1} E\tilde{V}(\chi_n)<\infty.$$ 
+\sup_{n\geq 1} E\tilde{V}(\chi_n)<\infty.$$
 Denote $\zeta_n:=\sup_{1\leq k\leq n}|\chi_k|$.
 Then, for all $p>0$, and for all $n\geq 1$,
 $$
@@ -372,7 +375,7 @@ E|\zeta_n|^p\leq \tilde{C}(p)\ln^{p/2}(n+1).
 $$
 holds for some $\tilde{C}(p)>0$.
 \end{lemma}
-\begin{proof} Define the \emph{convex} function 
+\begin{proof} Define the \emph{convex} function
 $$
 f(x):=e^{\tilde{c}|x|^{2/p}},\ |x|\geq \left(\frac{p}{2\tilde{c}}\right)^{p/2},\ f(x):=e^{p/2},\ |x|<\left(\frac{p}{2\tilde{c}}\right)^{p/2}.
 $$
@@ -397,13 +400,13 @@ for some $\tilde{C}(p)>0$, as stated.
 \begin{lemma} Under Assumption \ref{diss},
 $\sup_{n} EV(\theta_n)<\infty$.
 \end{lemma}
-\begin{proof} 
+\begin{proof}
 Assumption \ref{diss} implies that $V$ is a Lyapunov function for
 this stochastic system (see Proposition 8 of \cite{unadjusted}) and the statement easily follows from this.
 \end{proof}
 
 \begin{lemma}\label{lavel} Let Assumption \ref{diss} hold.
-We also have $\sup_n EV(\overline{z}_n)<\infty$ and $\sup_n EV(\overline{\theta}_n)<\infty$. {A fortiori},  
+We also have $\sup_n EV(\overline{z}_n)<\infty$ and $\sup_n EV(\overline{\theta}_n)<\infty$. {A fortiori},
 $\sup_n E\tilde{V}(\overline{z}_n)<\infty$
 \end{lemma}
 
@@ -419,12 +422,12 @@ This is quite trivial from Assumption \ref{lip} and Lemma \ref{lavel}, details l
 
 Clearly, since
 $X$ is conditionally $L$-mixing of order $(2,4)$ with respect to
-$(\mathcal{G}_t,\mathcal{G}^+_t)$, it remains 
+$(\mathcal{G}_t,\mathcal{G}^+_t)$, it remains
 conditionally $L$-mixing of order $(2,4)$ with respect to
 $(\mathcal{F}_t,\mathcal{F}^+_t)$, too.
 
 For each $\theta\in\mathbb{R}^d$, $0\leq s\leq t$, we recursively define
-$$ 
+$$
 z(s,s,\theta):=\theta,\quad z(t+1,s,\theta):=z(t,s,\theta)
 -\lambda h(z(t,s,\theta))+\sqrt{2\lambda}\xi_{t+1}.
 $$
@@ -450,7 +453,7 @@ E[H(\theta, E[X_k\vert\mathcal{F}_{nT}^+])].
 $$
 This implies that
 \begin{eqnarray*}
-|h_{k,nT}(\theta)-h(\theta)| &\leq&\\ 
+|h_{k,nT}(\theta)-h(\theta)| &\leq&\\
 \left|E[H(\theta,X_k)|\mathcal{F}_{nT}]-
 E[H(\theta,E[X_k\vert\mathcal{F}_{nT}^+])\vert\mathcal{F}_{nT}]\right|
 &+&\\
@@ -459,7 +462,7 @@ LE[|X_k-E[X_k\vert\mathcal{F}_{nT}^+]|\vert\mathcal{F}_{nT}]
 +LE[|X_k-E[X_k\vert\mathcal{F}_{nT}^+]|] &\leq&\\
 L[\gamma_1^{nT}(X,k-nT) + E\gamma_1^{nT}(X,k-nT)]. & &
 \end{eqnarray*}
-Hence 
+Hence
 $$
 \sum_{k=nT+1}^{\infty}|h_{k,nT}(\theta)-h(\theta)|\leq L[\Gamma_1^{nT}(X)
 +E\Gamma_1^{nT}(X)].
@@ -472,26 +475,26 @@ $E[(\Gamma_1^{nT}(X))^2]<\infty$, This implies the statement.
 
 \begin{proof}[Proof of Theorem \ref{main}.] Let $T:=\lfloor 1/\lambda\rfloor$.
 Fix $n\in\mathbb{N}$ and let $nT\leq t<(n+1)T$ be arbitrary.
-Let us define the (random) functions 
+Let us define the (random) functions
 $$
 h_{t,nT}(\theta):=
 E[H(\theta,X_t)\vert\mathcal{F}_{nT}],\ \theta\in\mathbb{R}^d.
-$$ 
+$$
 It is tedious but standard to show that there exists a jointly measurable version of
 $$
-(\omega,\theta)\to h_{k,nT}(\theta,\omega),\ 
+(\omega,\theta)\to h_{k,nT}(\theta,\omega),\
 (\omega,\theta)\in\Omega\times \mathbb{R}^d.
-$$ 
-Estimate, 
+$$
+Estimate,
 \begin{eqnarray*}
-| \theta_{t}-\overline{z}_{t}| \leq \lambda \left\vert\sum_{k=nT+1}^t 
+| \theta_{t}-\overline{z}_{t}| \leq \lambda \left\vert\sum_{k=nT+1}^t
 \left(H(\theta_k,X_k)-h(\overline{z}_k)\right)\right\vert &\leq&\\
-\lambda \sum_{k=nT+1}^t \vert 
+\lambda \sum_{k=nT+1}^t \vert
 H(\theta_k,X_k)-H(\overline{z}_k,X_k)\vert
 &+&\\
-\lambda \left\vert\sum_{k=nT+1}^{t} 
+\lambda \left\vert\sum_{k=nT+1}^{t}
 \left(H(\overline{z}_k,X_k)-h_{k,nT}(\overline{z}_k)\right) \right\vert &+&\\
-\lambda \sum_{k=nT+1}^t 
+\lambda \sum_{k=nT+1}^t
 \left\vert h_{k,nT}(\overline{z}_k)- h(\overline{z}_k)\right\vert &\leq&\\
 \lambda L \sum_{k=nT+1}^t |\theta_k-\overline{z}_k| &+&\\
 \lambda
@@ -502,25 +505,25 @@ h_{k,nT}(\overline{z}_k)\right)\right| &+&\\
 by Assumption \ref{lip}.
 Gronwall's lemma and taking squares lead to
 \begin{eqnarray*}
-|\theta_{t}-\overline{z}_{t}|^2 \leq & & \\ 
-2\lambda^2 e^{2LT\lambda} 
+|\theta_{t}-\overline{z}_{t}|^2 \leq & & \\
+2\lambda^2 e^{2LT\lambda}
 \left[\max_{nT+1\leq m< (n+1)T} \left|\sum_{k=nT+1}^m \left(H(\overline{z}_k,X_k)-
 h_{k,nT}(\overline{z}_k)\right)\right|^2 \right.
-&+& \\ 
+&+& \\
 \left. \left(\sum_{k=nT+1}^{\infty} \left\vert h_{k,nT}(\overline{z}_k)- h(\overline{z}_k)\right\vert\right)^2\right], & &
 \end{eqnarray*}
 noting also $(x+y)^2\leq 2(x^2+y^2)$, $x,y\in\mathbb{R}$.
-Let $N$ be the random variable 
-$N:=\sup_{nT+1\leq i< (n+1)T}|\overline{z}_i|$. 
+Let $N$ be the random variable
+$N:=\sup_{nT+1\leq i< (n+1)T}|\overline{z}_i|$.
 Now, recalling the definition of $T$ and taking $\mathcal{F}_{nT}$-conditional expectations, we can write
 \begin{eqnarray*}
 E\left[|\theta_{t}-\overline{z}_{t}|^2\vert\mathcal{F}_{nT}\right]
 \leq & & \\
 2\lambda^2 e^{2L}\left[\sum_{j=1}^{\infty}1_{\{j-1\leq N <j\}}
 E\left[\max_{nT+1\leq m<(n+1)T} \left|\sum_{k=nT+1}^m \left(H(\overline{z}_k,X_k)-
-h_{k,nT}(\overline{z}_k)\right)\right|^2 \vert\mathcal{F}_{nT}\right]\right. 
+h_{k,nT}(\overline{z}_k)\right)\right|^2 \vert\mathcal{F}_{nT}\right]\right.
 &+& \\
-\left. E\left[\left(\sum_{k=nT+1}^{\infty} \vert h_{k,nT}(\overline{z}_k)- 
+\left. E\left[\left(\sum_{k=nT+1}^{\infty} \vert h_{k,nT}(\overline{z}_k)-
 h(\overline{z}_k)\vert\right)^2\vert\mathcal{F}_{nT}\right]
 \right]. & &
 \end{eqnarray*}
@@ -532,7 +535,7 @@ $nT\leq k<(n+1)T$, Lemma \ref{toranaga} and taking expectations, we can continue
 E| \theta_{t}-\overline{z}_{t}|^2 &\leq&\\
 2\lambda^2 e^{2L}\sum_{j=1}^{\infty}E[1_{\{j-1\leq N <j\}}
 T\Gamma_2^{nT}(H(\theta,X),B(j))M_2^{nT}(H(\theta,X),B(j))] &+&\\
-2\lambda^2 e^{2L} 
+2\lambda^2 e^{2L}
 E\left[\Xi^2\right],
 \end{eqnarray*}
 see Lemma \ref{kaaka}.
@@ -557,7 +560,7 @@ $$
 E^{1/2}| \theta_{t}-\overline{z}_{t}|^2\leq C^{\sharp}\lambda \sqrt{T}
 |\ln(T)|^{3/2}\leq C^{\star}\sqrt{\lambda}|\ln(\lambda)|^{3/2},
 $$
-with some $C^{\sharp},C^{\star}>0$, for all $t\in\mathbb{N}$. 
+with some $C^{\sharp},C^{\star}>0$, for all $t\in\mathbb{N}$.
 
 Now we turn to
 estimating $|\overline{z}_t-\overline{\theta}_t|$. By Lemmata \ref{ghibli}
@@ -565,17 +568,17 @@ and \ref{easy},
 \begin{eqnarray*}
 ||\overline{z}_t-\overline{\theta}_t||_2 &\leq &\\
 \sum_{k=1}^n ||z(t,kT,\theta_{kT}) - z(t, (k-1)T, \theta_{(k-1)T})||_2 &=& \\
-\sum_{k=1}^n ||z(t,kT,\theta_{kT}) - z(t, kT, z(kT,(k-1)T, \theta_{(k-1)T}))||_2 
-&\leq &\\ 
-\sum_{k = 1}^{n} e^{-\lambda\rho(t-kT)/2} 
-\left[||\overline{\theta}_{kT -1} - \bar{z}_{kT-1}||_2 + 
+\sum_{k=1}^n ||z(t,kT,\theta_{kT}) - z(t, kT, z(kT,(k-1)T, \theta_{(k-1)T}))||_2
+&\leq &\\
+\sum_{k = 1}^{n} e^{-\lambda\rho(t-kT)/2}
+\left[||\overline{\theta}_{kT -1} - \bar{z}_{kT-1}||_2 +
 \lambda ||H(\overline{\theta}_{kT-1},X_{kT}) - h(\overline{z}_{kT-1})||_2\right]
 &\leq &\\
 \frac{C^{\dagger}}{1-e^{-\rho/2}}\left[1+C^{\flat}\right]\sqrt{\lambda}
 |\ln(\lambda)|^{3/2},
 \end{eqnarray*}
 for some $C^{\dagger}>0$.
-This completes the proof of the theorem since 
+This completes the proof of the theorem since
 $$
 |\theta_t-\overline{\theta}_t|\leq |{\theta}_t-\overline{z}_t|+
 |\overline{z}_t-\overline{\theta}_t|.
@@ -593,7 +596,7 @@ $$
 
 \section{The bright future}
 
-I think that we can significantly generalize the above results using another approach, based on 
+I think that we can significantly generalize the above results using another approach, based on
 \cite{eberle}. We will use the metric
 $$
 w(\mu,\nu):=\inf_{\zeta\in\mathcal{C}(\mu,\nu)}\int_{\mathbb{R}^d}\int_{\mathbb{R}^d} [1\wedge |x-y|](1+V(x)+V(y))\zeta(dx,dy).
@@ -617,7 +620,7 @@ A new approach would consist of the following steps:
 
 \begin{enumerate}
 
-\item We only assume dissipativity and Lipschitz-continuity of $h(\theta),H(\theta,x)$ (the latter uniformly in $x$). 
+\item We only assume dissipativity and Lipschitz-continuity of $h(\theta),H(\theta,x)$ (the latter uniformly in $x$).
 This guarantees that $L_t$ is contractive in the metric $w$, by \cite{eberle} and by e.g. \cite{unadjusted}.
 
 \item The arguments presented above can equally well be performed in continuous time and
@@ -636,11 +639,11 @@ divergence) should work.
 
 \item As $w(\cdot,\cdot)\leq C||\cdot-\cdot||_{V}$, this leads to a rate of convergence much better than
 that of Raginsky, not in $W_2$, but in $w$. AND WITHOUT CONVEXITY OF ANY SORT! Also, $h$ does not need to
-be the derivative of something for 2. and 3. to work. 
+be the derivative of something for 2. and 3. to work.
 
 \end{enumerate}
 
-With Huy we could do 2., I think, while the other part of the team could do 3. 
+With Huy we could do 2., I think, while the other part of the team could do 3.
 The machine learning community will tremble :).
 
 \begin{thebibliography}{00}
