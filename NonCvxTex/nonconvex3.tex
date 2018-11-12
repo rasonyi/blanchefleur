@@ -1,0 +1,1378 @@
+\documentclass[a4paper,draft]{article}
+
+\usepackage{amsmath,amsthm,latexsym,eufrak,amssymb}
+
+\usepackage[margin=2cm]{geometry}
+
+\usepackage{fouriernc}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{assumption}[theorem]{Assumption}
+
+
+\begin{document}
+
+
+\title{On recursive sampling schemes with dependent\\ data streams:
+the fully non-convex case
+\footnotemark[1]}
+
+\author{N. H. Chau\footnotemark[3] \and \'E. Moulines\footnotemark[4] \and
+M. R\'asonyi\footnotemark[3] \and S. Sabanis\footnotemark[2] \and Y. Zhang\footnotemark[2]}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+\footnotetext[1]{All the authors
+were supported by The Alan Turing Institute, London under the EPSRC grant EP/N510129/1.
+N. H. C. and M. R. also enjoyed the support of the NKFIH (National Research,
+Development and Innovation Office, Hungary)
+grant KH 126505 and the ``Lend\"ulet'' grant LP 2015-6 of the
+Hungarian Academy of Sciences. We thank the Alan Turing Institute, London, UK; the R\'enyi Institute, Budapest, Hungary and the \'Ecole Polytechnique, Palaiseau, France for hosting research meetings of the authors.}
+\footnotetext[2]{University of Edinburgh, UK}
+\footnotetext[3]{MTA Alfr\'ed R\'enyi Institute of Mathematics, Budapest, Hungary}
+\footnotetext[4]{\'Ecole Polytechnique, Palaiseau, France}
+
+\date{\today}
+
+\maketitle
+
+\begin{abstract}
+We consider a stochastic gradient Langevin recursive scheme driven by
+dependent data and estimate the distance of its law from a (not necessarily logconcave) 
+target distribution in a suitable Wasserstein-type metric.
+\end{abstract}
+
+\section{Introduction}
+
+In the remarkable paper \cite{raginsky} a non-convex optimization problem was considered.
+Sampling error (done below) + generalization error (requires attention but probably
+identical to Raginsky)+ suboptimality error (identical to Raginsky). Elaborate.
+
+The estimation of the sampling error is our main concern in the present article. We 
+obtain sharper results (which we believe to be optimal) than those of \cite{raginsky}.
+Furthermore, we allow a possibly dependent data sequence. The latter generalization is fundamental
+as it establishes the robustness of the stochastic gradient Langevin dynamics with respect to
+data that are, in general, \emph{not} i.i.d.
+
+\section{Results}
+
+Let $(\Omega,\mathcal{F},P)$ be a probability space. Expectation of a real-valued random
+variable $X$ will be denoted by $E[X]$.
+For $1\leq p<\infty$, the notation $L^p$ will refer to the usual space of $p$-integrable real-valued random variables.
+Fix an integer $d\geq 1$. For an $\mathbb{R}^d$-valued random variable $X$,
+$\mathcal{L}(X)$ will denote its law on $\mathcal{B}(\mathbb{R}^d)$ (the Borel sigma-algebra of $\mathbb{R}^d$). Scalar product will be denoted
+by $\langle \cdot,\cdot\rangle$, with $|\cdot|$ standing for the
+corresponding norm (where the dimension of the space may vary depending the context).
+We fix a discrete-time filtration $\mathcal{G}_n:=\sigma(\varepsilon_k,\ k\leq n,\ k\in\mathbb{Z})$, 
+$n\in\mathbb{N}$
+where $(\varepsilon_n)_{n\in\mathbb{Z}}$ is an i.i.d. sequence with values in some Polish space. This represents
+the flow of past information. The notation $\mathcal{G}_{\infty}$ is self-explanatory. 
+We also define the decreasing sequence of sigma-algebras
+$\mathcal{G}^+_n:=\sigma(\varepsilon_k,\ k>n)$, $n\in\mathbb{N}$, representing future information
+at the respective time instants. 
+
+Fix an $\mathbb{R}^d$-valued random variable $\theta_0$, representing the initial value of
+the procedure we consider.
+For each $\beta,\lambda>0$, define the $\mathbb{R}^d$-valued
+random process $\theta^{\lambda}_n$, $n\in\mathbb{N}$ by recursion:
+\begin{equation}\label{nab}
+\theta^{\lambda}_0:=\theta_0,\quad \theta^{\lambda}_{n+1}:=\theta^{\lambda}_n-\lambda H(\theta^{\lambda}_n,X_{n+1})+\sqrt{\frac{2\lambda}{\beta}}\xi_{n+1},\ n\in\mathbb{N},
+\end{equation}
+where $H:\mathbb{R}^d\times\mathbb{R}^m\to\mathbb{R}^d$ is a measurable
+function, $X_n$, $n\in\mathbb{N}$ is an $\mathbb{R}^m$-valued, $(\mathcal{G}_n)_{n\in\mathbb{N}}$-adapted
+process and $\xi_n$, $n\in\mathbb{N}$ is
+an independent sequence of standard Gaussian random variables.
+
+We interpret $X_n$, $n\in\mathbb{N}$ as a stream of data and $\xi_n$, $n\in\mathbb{N}$ as an artificially
+generated noise sequence.
+We assume throughout the paper that $\theta_0$, $\mathcal{G}_{\infty}$ and $(\xi_{n})_{n\in\mathbb{N}}$
+are independent.
+
+Let $U:\mathbb{R}^d\to\mathbb{R}_+$ be continuously differentiable
+with derivative $h:=\nabla U$.
+Let us define the probability
+$$
+\pi_{\beta}(A):=\frac{\int_A e^{-\beta U(\theta)}\, d\theta}{\int_{\mathbb{R}^d} e^{-\beta U(\theta')}\, d\theta'},\
+A\in\mathcal{B}(\mathbb{R}^d).
+$$
+It is implicitly assumed that $\int_{\mathbb{R}^d} e^{-\beta U(\theta')}\, d\theta'<\infty$ and this is
+indeed the case under Assumption \ref{dissipativity} below, as easily seen.
+
+Our main purpose is to (approximately) sample from the distribution $\pi_{\beta}$ using the
+scheme \eqref{nab}.
+
+We now present our assumptions. First, the moments of the initial condition need to 
+be controlled.
+
+\begin{assumption}\label{imit}
+$$
+|\theta_0|\in\cap_{p\geq 1} L^p.
+$$
+\end{assumption}
+
+Next, we require joint Lipschitz-continuity of $H$.
+
+\begin{assumption}\label{lip} There is $K>0$ such that
+$$
+|H(\theta_1,x_1)-H(\theta_2,x_2)|\leq K[|\theta_1-\theta_2|+|x_1-x_2|],\ \theta_1,\theta_2\in\mathbb{R}^d,
+\ x_1,x_2\in\mathbb{R}^m.
+$$
+We set $H^*:=|H(0,0)|$.
+\end{assumption}
+
+The data sequence $X_n$, $n\in\mathbb{N}$ need not be i.i.d., we require 
+only a mixing property, defined in Section \ref{lm} below.
+ 
+\begin{assumption}\label{lmiu}
+The process $X_n$, $n\in\mathbb{N}$ is conditionally $L$-mixing with respect to
+$(\mathcal{G}_n,\mathcal{G}^+_n)_{n\in\mathbb{N}}$. It satisfies
+\begin{equation}\label{lopp}
+E[H(\theta,X_n)]=h(\theta),\ \theta\in\mathbb{R}^d,\ n\in\mathbb{N}.
+\end{equation}
+\end{assumption}
+
+\begin{remark}{\rm Stationarity of the process $X_n$, 
+$n\in\mathbb{N}$ would also be natural to assume but we need only
+the weaker property \eqref{lopp}.}
+\end{remark}
+
+Finally, we present a dissipativity condition on $H$.
+
+\begin{assumption}\label{dissipativity}
+There exist $a,b>0$ such that, for all $x\in\mathbb{R}^m$,
+\begin{equation}\label{principal}
+\langle H(\theta,x),\theta\rangle\geq a |\theta|^2-b,\ \theta\in\mathbb{R}^d.
+\end{equation}
+We may and will assume $a\leq 1$.
+\end{assumption}
+
+When $X_n=c$ for all $n\in\mathbb{N}$ for some $c\in\mathbb{R}^m$  
+(i.e. when $H(\theta,X_t)$ is replaced by $h(\theta)$
+in \eqref{nab}) then we arrive at the well-known unadjusted Langevin algorithm
+whose convergence properties have been amply analyzed, see e.g.
+\cite{dalalyan,unadjusted,berkeley,alex}. The case of i.i.d.
+$X_n$, $n\in\mathbb{N}$ has also been
+investigated in great detail, see e.g. \cite{raginsky,xu,alex}.
+
+In the present article obtain better estimates for 
+the distance between $\mathcal{L}(\theta^{\lambda}_n)$ and $\pi_{\beta}$.
+than those of \cite{raginsky} and
+\cite{xu}. Such rates have already been obtained in \cite{convex}
+for strongly convex $U$ and in \cite{alex} for $U$ that is convex outside
+a compact set. Here we make no convexity assumptions at all. 
+This comes at the price of using the metric $W_1$ defined in \eqref{bn} below while 
+\cite{raginsky,xu,alex,convex} use Wasserstein distances with respect to the
+standard Euclidean metric, see \eqref{family} below. 
+
+Another novelty of our paper is that, just like in \cite{convex},
+we allow the data sample $X_n$, $n\in\mathbb{N}$ to be dependent. As observed data have no reason
+to be i.i.d. we think that such a result is
+fundamental to assure the robustness of the sampling method based on the stochastic
+gradient Langevin dynamics \eqref{nab}.
+
+Let $\mathcal{P}$ denote the set of probabilities on $\mathcal{B}(\mathbb{R}^d)$.
+For $\mu,\nu\in\mathcal{P}$,
+let $\mathcal{C}(\mu,\nu)$ denote the set of probabilities $\zeta$
+on $\mathcal{B}(\mathbb{R}^{2d})$ such that its respective marginals are $\mu,\nu$. Define
+\begin{equation}\label{bn}
+W_1(\mu,\nu):=\inf_{\zeta\in\mathcal{C}(\mu,\nu)}\int_{\mathbb{R}^d}\int_{\mathbb{R}^d} [|x-y|\wedge 1]\zeta(dx,dy),\ \mu,\nu\in\mathcal{P},
+\end{equation}
+which is the Wasserstein-$1$ distance associated to the bounded metric $|x-y|\wedge 1$,
+$x,y\in\mathbb{R}^d$.
+
+\begin{remark} {\rm In this work, most constants will be denoted by $C_j$ for some natural number 
+$j\in\mathbb{N}$.
+Without further mention, these constants depend on $\theta_0$, $K$, $a$, $b$,
+$H^*$, $\beta$, $d$ and on the process $X_n$, $n\in\mathbb{N}$ but, unless otherwise stated,
+they do not depend on anything else. In case of further dependencies (e.g. dependence on $p$
+in Lemma \ref{lyapp} below) we signal these in parentheses (e.g. $C_6(p)$ in Lemma
+\ref{lyapp}). We will not trace exact dependence on the parameters in the proofs. In Remark \ref{betad},
+however, we perform a retrospective analysis about $\beta$ and $d$.}
+\end{remark}
+
+Our main contribution is summarized in the
+following result.
+
+\begin{theorem}\label{main} Let Assumptions \ref{imit}, \ref{lip}, \ref{lmiu} and \ref{dissipativity}
+be valid. Then there are constants
+$C_0,C_1,C_2>0$ such that
+\begin{equation}\label{manyi}
+W_1(\mathcal{L}(\theta^{\lambda}_n),\pi)\leq C_1 e^{-C_0\lambda n}+C_2\sqrt{\lambda}
+,\ n\in\mathbb{N}
+\end{equation}
+holds for every $0<\lambda\leq 1$.
+\end{theorem}
+
+Example 3.4 of \cite{convex} suggests that the best rate we can hope to get in \eqref{manyi} is $\sqrt{\lambda}$, even in the convex case. The above theorem asymptotically achieves this rate.
+We remark that, though
+the statement of Theorem \ref{main} concerns the discrete-time recursive
+scheme \eqref{nab}, its proof will
+be carried out entirely in a continuous-time setting, in Section \ref{po}. It relies 
+on techniques from \cite{convex} and \cite{eberle}. The principal new idea is
+the introduction of the auxiliary process $\tilde{Y}^{\lambda}_t(\mathbf{x})$, $t\in\mathbb{R}_+$,
+see \eqref{mah} below.
+Consider now a strengthening of Assumption \ref{dissipativity}.
+
+\begin{assumption}\label{coc}
+There exist $b,a>0$ such that, for each $\theta_1$, $\theta_2$ satisfying 
+$|\theta_1-\theta_2|>b$,
+\begin{equation}\label{condition}
+\langle H(\theta_1,x)-H(\theta_2,x),\theta_1-\theta_2\rangle\geq a |\theta_1-\theta_2|^2,\ x\in\mathbb{R}^m.
+\end{equation}
+Again, we may and will assume $a\leq 1$.
+\end{assumption}
+
+Let us recall the definition of the familiar, ``usual'' Wasserstein-$p$ distance, for $p\geq 1$:
+\begin{equation}\label{family}
+\tilde{W}_p(\mu,\nu):=\inf_{\zeta\in\mathcal{C}(\mu,\nu)}
+\left(\int_{\mathbb{R}^d}\int_{\mathbb{R}^d}|x-y|^p\zeta(dx,dy)\right)^{1/p},\ \mu,\nu\in\mathcal{P}.
+\end{equation}
+
+\begin{theorem}\label{mainv} Let Assumptions \ref{imit}, \ref{lip}, \ref{lmiu} and \ref{coc}
+be valid. Then there are constants
+$C_3,C_4,C_5>0$ such that
+\begin{equation}\label{menyi}
+\tilde{W}_1(\mathcal{L}(\theta^{\lambda}_n),\pi)\leq C_4 e^{-C_3\lambda n} +C_5\sqrt{\lambda},\ n\in\mathbb{N}
+\end{equation}
+holds for every $0<\lambda\leq 1$.
+\end{theorem}
+
+Strengthening the monotonicity condition \eqref{condition} even guarantees convergence in $\tilde{W}_2$.
+
+\begin{assumption}\label{coc1}
+There exists $a>0$ such that, for each $\theta_1$, $\theta_2\in\mathbb{R}^d$, 
+$$
+\langle H(\theta_1,x)-H(\theta_2,x),\theta_1-\theta_2\rangle\geq a [|\theta_1-\theta_2|^2+|H(\theta_1,x)-
+H(\theta_2,x)|^2],\ x\in\mathbb{R}^m.
+$$
+Again, we may and will assume $a\leq 1$.
+\end{assumption}
+
+\begin{theorem}\label{mainw} Let Assumptions \ref{imit}, \ref{lip}, \ref{lmiu} and \ref{coc1}
+be valid. Then there are constants
+$C_3,C_4,C_5>0$ such that
+\begin{equation}\label{mennyi}
+\tilde{W}_2(\mathcal{L}(\theta^{\lambda}_n),\pi)\leq C_4 e^{-C_3\lambda n} +C_5\sqrt{\lambda},\ n\in\mathbb{N}
+\end{equation}
+holds for every $0<\lambda\leq 1$.
+\end{theorem}
+
+\begin{remark}{\rm Our assumptions can be somewhat weakened. Indeed, 
+$|\theta_0|\in L^{4+\chi}$ for some $\chi>0$ is enough to assume and $X_t$ can be $L$-mixing of
+order $(2,4)$ only. ????????? Elaborate.}
+\end{remark}
+
+At the end of this section we shortly discuss, in the setting and notation of the present article, 
+the relationship between our assumptions and those of
+previous papers. Condition $(A.5)$ of \cite{raginsky} is (much) stronger than Assumption \ref{imit}
+above. Assumption \ref{lmiu} is identical to $(A.3)$ in \cite{raginsky}.
+Condition $(A.2)$ in \cite{raginsky} corresponds to Lipschitz-continuity of $H$
+in its first variable with a Lipschitz-constant independent of $x\in\mathbb{R}^m$ 
+and $(A.1)$ there means that $H(0,\cdot)$, $u(0,\cdot)$ are bounded 
+where $U(\theta)=Eu(\theta,X_0)$ and $H(\cdot,\cdot)=\partial_{\theta}u(\cdot,\cdot)$. 
+Hence Assumption \ref{lip} here is stronger than $(A.2)$ and it is uncomparable to $(A.2)$ of \cite{raginsky}.
+Nonetheless, Assumption \ref{lip} does not seem to be restrictive for practical purposes. 
+Condition $(A.4)$ in \cite{raginsky} is implied by Assumptions \ref{lip} and \ref{lmiu}.
+We obtain a rate $\lambda^{1/2}$ in \eqref{manyi} for the $W_1$
+distance while they only obtain $\lambda^{5/4}n$ (which depends on $n$) 
+but in the $\tilde{W}_2$ distance. As we have already mentioned, \cite{raginsky} is applicable
+only if $X_n$, $n\in\mathbb{N}$ is i.i.d. while for us Assumption \ref{lmiu} suffices. See
+also Remark \ref{padi2} below about the i.i.d. case.
+
+Now let us turn to \cite{alex}. Their Assumption 1.1 is precisely Assumptions \ref{lip} and
+\ref{coc} of the present paper together but in \cite{alex} this is stipulated for $h$
+while we need it for $H(\cdot,x)$, for all $x$. In their Assumption 1.3 the variance of $H(\theta,X_0)$
+is required to be controlled by a power of the step size $\lambda$. We do not need
+such an assumption. The second statement of their 
+Theorem 1.4 (with $\alpha=1$, using their notation $\alpha$) is the same as our Theorem \ref{mainv}
+(but under different assumptions).
+   
+\section{Proofs}\label{po}
+
+Throughout this section we assume that the hypotheses of Theorem \ref{main} are valid.
+Note that Assumption \ref{lip} implies
+\begin{equation}\label{mulyan}
+|h(\theta_1)-h(\theta_2)|\leq K|\theta_1-\theta_2|,\ \theta_1,\theta_2\in\mathbb{R}^d,
+\end{equation}
+Assumption \ref{dissipativity} implies
+\begin{equation}\label{laban}
+\left\langle h(\theta),\theta\right\rangle\geq a |\theta|^2-b,\ \theta\in\mathbb{R}^d.
+\end{equation}
+Also, Assumption \ref{lip} implies
+\begin{equation}\label{jojo}
+|H(\theta,x)|\leq K[|\theta|+|x|]+H^*,
+\end{equation}
+with the constant $H^*$ defined in Assumption \ref{lip}. 
+We will employ a family of Lyapunov-functions in the sequel. For this
+purpose, let us define, for each $p\geq 1$,
+$$
+V_p(\theta):=(|\theta|^2+1)^{p/2},\ \theta\in\mathbb{R}^d.
+$$
+Notice that these functions are twice continuously differentiable and
+\begin{equation}\label{solymos}
+\lim_{|\theta|\to\infty}\frac{\nabla V_p(\theta)}{V_p(\theta)}=0.
+\end{equation}
+Let $\mathcal{P}_{\, V_p}$ denote the set of $\mu\in\mathcal{P}$ satisfying
+$$
+\int_{\mathbb{R}^d}V_p(\theta)\,\mu(d\theta)<\infty.
+$$
+
+For $\mu\in\mathcal{P}$ and for a non-negative measurable $f:\mathbb{R}^d\to\mathbb{R}$
+we will write
+$$
+\mu(f):=\int_{\mathbb{R}^d} f(\theta)\mu(d\theta).
+$$
+
+The following functional will be pivotal in our arguments as it will
+be used to measure the distance between probabilities. We define
+$$
+w_1(\mu,\nu):=\inf_{\zeta\in\mathcal{C}(\mu,\nu)}\int_{\mathbb{R}^d}\int_{\mathbb{R}^d} [1\wedge |x-y|](1+V_1(x)+V_1(y))\zeta(dx,dy),\ \mu,\nu\in\mathcal{P}_{\, V_1}.
+$$
+Though $w_1$ is not a metric, it satisfies 
+\begin{equation}\label{lucia}
+W_1(\cdot,\cdot)\leq w_1(\cdot,\cdot).
+\end{equation}
+
+\begin{lemma}\label{mr} Let $q>1$ be arbitrary, let
+$\mu,\nu\in\mathcal{P}_{\, V_q}$. Define $q'$ through $1/q+1/q'=1$.
+Then 
+\begin{eqnarray*}
+& & w_1(\mu,\nu)
+\leq \tilde{W}_{q}(\mu,\nu)[1+\mu^{1/q'}(V_{1+q'})+\nu^{1/q'}(V_{1+q'})].  
+\end{eqnarray*}
+\end{lemma}
+\begin{proof}
+Indeed, by the H\"older and Minkowski inequalities,
+\begin{eqnarray*}
+& & w_1(\mu,\nu)\\
+&\leq & \inf_{\zeta\in\mathcal{C}(\mu,\nu)}\int_{\mathbb{R}^d}\int_{\mathbb{R}^d} 
+|x-y|(1+V_1(x)+V_1(y))\zeta(dx,dy)\\
+&\leq & \inf_{\zeta\in\mathcal{C}(\mu,\nu)}\left(\int_{\mathbb{R}^d}\int_{\mathbb{R}^d} |x-y|^{q}\zeta(dx,dy)\right)^{1/q}
+\left(\int_{\mathbb{R}^d}\int_{\mathbb{R}^d} [1+V_1(x)+V_1(y)]^{q'}\zeta(dx,dy)\right)^{1/q'}\\
+&\leq& \tilde{W}_{q}(\mu,\nu)[1+\mu^{1/q'}(V^{q'}_{1})+\nu^{1/q'}(V^{q'}_{1})]\\
+&=& \tilde{W}_{q}(\mu,\nu)[1+\mu^{1/q'}(V_{1+q'})+\nu^{1/q'}(V_{1+q'})].  
+\end{eqnarray*}
+using also the definition of $V_p$ for various $p\geq 1$. The statement follows.
+\end{proof}
+
+
+
+Our estimations will be carried out in a \emph{continuous-time} setting, so
+we define and discuss a number of auxiliary {continuous-time} processes below.
+First, consider $L_t$, $t\in\mathbb{R}_+$ defined by
+the stochastic differential equation (SDE)
+\begin{equation}\label{kako}
+dL_t=-h(L_t)\, dt+ \sqrt{\frac{2}{\beta}} dB_t,\quad L_0:=\theta_0,
+\end{equation}
+where $B$ is standard Brownian motion on $(\Omega,\mathcal{F},P)$,
+independent of $\mathcal{G}_{\infty}\vee \sigma(\theta_0)$. Its natural filtration
+will be denoted by $\mathcal{F}_t$, $t\in\mathbb{R}_+$. The meaning of $\mathcal{F}_{\infty}$
+is clear. Equation \eqref{kako}
+has a unique solution on $\mathbb{R}_+$ adapted to $(\mathcal{F}_t)_{t\in\mathbb{R}_+}$ since $h$ is
+Lipschitz-continuous by \eqref{mulyan}. For each $x\in\mathbb{R}^m$ and for
+an arbitrary random variable $\tilde{\theta}_0$ (independent of $\mathcal{F}_{\infty}$)
+let us also define $\tilde{L}_t(x)$, $t\in\mathbb{R}_+$ by
+\begin{equation*}
+d\tilde{L}_t(x)=-H(\tilde{L}_t(x),x)\, dt+ \sqrt{\frac{2}{\beta}} dB_t,\quad \tilde{L}_0:=\tilde{\theta}_0.
+\end{equation*}
+
+
+We proceed by defining, for each $\lambda>0$,
+$$
+L^{\lambda}_t:=L_{\lambda t},\ t\in\mathbb{R}_+.
+$$
+Notice that $\tilde{B}^{\lambda}_t:=B_{\lambda t}/\sqrt{\lambda}$, $t\in\mathbb{R}_+$
+is also a Brownian motion and 
+\begin{equation}\label{kell}
+dL^{\lambda}_t=-\lambda h(L^{\lambda}_t)\, dt+\sqrt{\frac{2\lambda}{\beta}}d\tilde{B}^{\lambda}_t,\
+L^{\lambda}_0=\theta_0.
+\end{equation}
+Define $\mathcal{F}_t^{\lambda}:=\mathcal{F}_{\lambda t}$, $t\in\mathbb{R}_+$, the natural
+filtration of $\tilde{B}^{\lambda}_t$, $t\in\mathbb{R}_+$.
+
+For each $x\in\mathbb{R}^m$,
+define $\tilde{Q}_{t}(x):=\tilde{L}_{\lambda t}(x)$, 
+with an initial condition $\tilde{\theta}_0$
+which is independent of $\mathcal{F}_{\infty}$.
+Note that $\tilde{Q}_t(x)$, $t\in \mathbb{R}_+$ is the (unique, $(\mathcal{F}_t^{\lambda})_{t\in\mathbb{R}_+}$-adapted) solution of
+\begin{equation}\label{seuso}
+d\tilde{Q}_t(x)=-\lambda H(\tilde{Q}_t(x),x)\, dt+\sqrt{\frac{2\lambda}{\beta}}dB^{\lambda}_t.
+\end{equation}
+Analogously,
+define $Q_t(x)$, $t\in\mathbb{R}_+$
+where
+\begin{equation}\label{marad}
+d{Q}_t(x)=-\lambda H({Q}_{\lfloor t\rfloor}(x),x)\, dt+\sqrt{\frac{2\lambda}{\beta}}dB^{\lambda}_t,
+\end{equation}
+with $Q_0(x)$ having law $\mu_0$ and being independent of $\mathcal{F}_{\infty}$.
+Note that \eqref{marad} can be explicitly solved by a simple recursion and it coincides
+with the continuously interpolated Euler-Maruyama approximation of $\tilde{Q}_t(x)$, $t\in\mathbb{R}_+$.
+
+Let us also introduce, for each $\lambda>0$ and for each 
+$\mathbf{x}=(x_0,x_1,\ldots)\in(\mathbb{R}^m)^{\mathbb{N}}$, the process $\tilde{Y}^{\lambda}(\mathbf{x})$,
+$t\in\mathbb{R}_+$ satisfying
+\begin{equation}\label{mah}
+d\tilde{Y}^{\lambda}_t(\mathbf{x})=-\lambda H(\tilde{Y}^{\lambda}_t,
+x_{\lfloor t\rfloor})\, dt+\sqrt{\frac{2\lambda}{\beta}}d\tilde{B}^{\lambda}_{t},
+\end{equation}
+with initial condition $\tilde{Y}^{\lambda}_0(\mathbf{x})=\theta_0$.
+Due to Assumption \ref{lip}, there is a unique
+solution to \eqref{mah} which is adapted to
+$(\mathcal{F}_t^{\lambda})_{t\in\mathbb{R}_+}$.
+
+Let us now define the continuously interpolated
+Euler-Maruyama approximation of $\tilde{Y}^{\lambda}_t(\mathbf{x})$, $t\in\mathbb{R}_+$ via
+\begin{equation}\label{mahh}
+dY^{\lambda}_t(\mathbf{x})=-\lambda H(Y^{\lambda}_{\lfloor t\rfloor},{x}_{\lfloor t\rfloor})\, dt
++ \sqrt{\frac{2\lambda}{\beta}} d\tilde{B}^{\lambda}_{t},
+\end{equation}
+with initial condition $Y^{\lambda}_0(\mathbf{x})=\theta_0$.
+Notice that \eqref{mahh}, again, can be solved by a simple recursion.
+We also set $\Theta_t^{\lambda}:=Y^{\lambda}_t(\mathbf{X})$, $t\in\mathbb{R}_+$,
+where $\mathbf{X}$ is a random element in $(\mathbb{R}^m)^{\mathbb{N}}$
+defined by $\mathbf{X}_i:=X_i$, $i\in\mathbb{N}$.
+Note that, for each integer $n\in\mathbb{N}$, $\mathcal{L}({\Theta}^{\lambda}_n)=\mathcal{L}(\theta_n^{\lambda})$ so we will work towards estimating $W_1(\mathcal{L}(\Theta^{\lambda}_t),\pi_{\beta})$
+in the sequel.
+
+
+
+The next lemma shows that the SDEs \eqref{seuso} and \eqref{kako} satisfy standard drift conditions 
+involving the functions $V_p$. Note that, on the left-hand side of \eqref{genlib} below,
+we can see the infinitesimal generator of the diffusion process $L$ applied to
+the function $V_p$.
+
+\begin{lemma}\label{lyapp} For each $p\geq 1$ there exist
+$C_6(p)$, $C_7(p)$
+such that
+\begin{equation}\label{genlib}
+\frac{\Delta V_p(\theta)}{\beta}-\langle h(\theta),\nabla V_p(\theta)\rangle\leq
+-C_6(p) V_p(\theta)+C_7(p),\ \theta\in\mathbb{R}^d,
+\end{equation}
+and, for all $x\in\mathbb{R}^m$,
+\begin{equation}\label{genlib1}
+\frac{\Delta V_p(\theta)}{\beta}-\langle H(\theta,x),\nabla V_p(\theta)\rangle\leq
+-C_6(p) V_p(\theta)+C_7(p),\ \theta\in\mathbb{R}^d.
+\end{equation}
+\end{lemma}
+\begin{proof}
+By direct calculation, the left-hand side of \eqref{genlib} equals
+\begin{eqnarray}\label{ross}
+\frac{dp(|\theta|^2+1)^{(p-2)/2}}{\beta}+\frac{p(p-2)(|\theta|^2+1)^{(p-4)/2}|\theta|^2}{\beta}-
+p\langle h(\theta),(|\theta|^2+1)^{(p-2)/2}\theta\rangle.
+\end{eqnarray}
+By Assumption \ref{dissipativity}, the third term is dominated by
+\begin{equation}\label{tarkin}
+-pa |\theta|^2(|\theta|^2+1)^{(p-2)/2}+pb(|\theta|^2+1)^{(p-2)/2}.
+\end{equation}
+As the first term in \eqref{tarkin} contains a higher power
+of $|\theta|$ than either the first two terms in \eqref{ross} or
+the second term in \eqref{tarkin},
+it follows that \eqref{ross} is smaller than
+$$
+-\frac{pa}{2} |\theta|^2(|\theta|^2+1)^{(p-2)/2}\leq -\frac{pa}{4}V_p(\theta),
+$$
+for $\theta$ with $|\theta|$ large enough. This implies \eqref{genlib}.
+The statement \eqref{genlib1} follows in an identical way, noting that the 
+constants which appear do not depend on $x$.
+\end{proof}
+
+A crucial contraction property is formulated in the next theorem.
+
+\begin{theorem}\label{contra} Let $L_t'$,
+$t\in\mathbb{R}_+$ (respectively, $\tilde{Q}_t'(x)$)
+be the solutions of
+\eqref{kako} (resp. \eqref{seuso})
+with initial condition $L_0'=\tilde{Q}_0'(x)=\theta_0'$ which is independent of $\mathcal{F}_{\infty}$
+and satisfies $|\theta_0'|\in L^1$. There exist constants $C_8$, $C_9$
+such that
+\begin{equation}\label{karako}
+w_1(\mathcal{L}(L_t),\mathcal{L}(L_t'))\leq C_9 e^{-C_8 t}
+w_1(\mathcal{L}(\theta_0),\mathcal{L}(\theta_0')),\ t\in\mathbb{R}_+,
+\end{equation}
+and, for all $x\in\mathbb{R}^m$,
+\begin{equation}\label{karako1}
+w_1(\mathcal{L}(\tilde{Q}_t(x)),\mathcal{L}(\tilde{Q}'_t(x)))\leq C_9 e^{-C_8 t}
+w_1(\mathcal{L}(\theta_0),\mathcal{L}(\theta_0')),\ t\in\mathbb{R}_+.
+\end{equation}
+\end{theorem}
+\begin{proof}  
+We first treat $L_t$, $L_t'$.
+Assumption 2.1 of \cite{eberle} holds with $\kappa$ constant,
+by Assumption \ref{lip} above. Assumption 2.5 of the same paper is valid
+by \eqref{solymos} and Assumption 2.2 of \cite{eberle} holds with $V=V_p$ by Lemma
+\ref{lyapp} (note that in that paper
+the diffusion coefficient is assumed to be $1$ while in our case it is $\sqrt{2/\beta}$
+but this doesn't affect the validity of the arguments, only the values of the constants). 
+So we can apply Corollary 2.3 of \cite{eberle} which implies
+$$
+\mathcal{W}_{\rho_2}
+(\mathcal{L}(L_t),\mathcal{L}(L_t'))\leq e^{-C_8 t}
+\mathcal{W}_{\rho_2}(\mathcal{L}(\theta_0),\mathcal{L}(\theta_0')),\ t\in\mathbb{R}_+,
+$$
+with some $C_8$, where the functional 
+$\mathcal{W}_{\rho_2}$ comes from \cite{eberle} with the choice $V:=V_1$.
+It is easy to check, using the definition of $\mathcal{W}_{\rho_2}$ that
+$$
+C_{10} w_1(\mu,\nu)\leq
+\mathcal{W}_{\rho_2}
+(\mu,\nu)\leq C_{11} w_1(\mu,\nu),\ \mu,\nu\in\mathcal{P}_{\, V_1},
+$$
+for suitable $C_{10},C_{11}$. Statement \eqref{karako} follows. We get \eqref{karako1} by
+an identical argument.
+\end{proof}
+
+Choose $J>0$ so large that 
+\begin{equation}\label{bartoli}
+C_9 e^{-C_8 u}\leq e^{-\frac{C_8 u}{2}},
+\end{equation} 
+for $u\geq J$ and set $T:=J/{\lambda}$, which will play an important role
+in the sequel.
+We need a moment estimate for later use.
+
+\begin{lemma}\label{moments} For each integer $p\geq 1$,
+$$
+\sup_{x\in\mathbb{R}^m}\sup_{\lambda\in (0,1]}\sup_{t\in\mathbb{R}_+}EV_p(\tilde{Q}^{\lambda}_t(x))
+\leq C_{12}(\tilde{\theta}_0(V_p),p),
+$$
+and for each integer $p\geq 1$,
+$$
+\sup_{\lambda\in (0,1]}\sup_{t\in\mathbb{R}_+}EV_p({Q}^{\lambda}_t({x}))
+\leq C_{13}(\theta_0(V_p),p),
+$$
+for suitable constants $C_{12}(\tilde{\theta}_0(V_p),p)$, $C_{13}(\theta_0(V_p),p)$. 
+Analogously, for $p\geq 1$
+$$
+\sup_{\mathbf{x}\in(\mathbb{R}^m)^{\mathbb{N}}}\sup_{\lambda\in (0,1]}\sup_{t\in\mathbb{R}_+}EV_p(\tilde{Y}^{\lambda}_t(\mathbf{x}))
+\leq C_{14}({\theta}_0(V_p),p)
+$$
+and for integers $p\geq 1$,
+$$
+\sup_{\lambda\in (0,1]}\sup_{t\in\mathbb{R}_+}EV_p({Y}^{\lambda}_t(\mathbf{x}))
+\leq C_{15}(\theta_0(V_p),p)
+$$
+for suitable $C_{14}(\tilde{\theta}_0(V_p),p)$, $C_{15}(\theta_0(V_p),p)$.
+\end{lemma}
+\begin{proof} We write 
+$\tilde{Q}_t:=\tilde{Q}^{\lambda}_t(\mathbf{x})$ in this proof, for simplicity.
+It\^o's formula implies that
+\begin{eqnarray*}
+dV_p(\tilde{Q}_t)=\left[\lambda\frac{\Delta V_p(\tilde{Q}_t)}{\beta}-\lambda \langle H(\tilde{Q}_t,x),\nabla V_p(\tilde{Q}_t)\rangle\right]\, dt-\lambda \langle H(\tilde{Q}_t,x),\nabla V_p(\tilde{Q}_t)d\tilde{B}^{\lambda}_t\rangle.
+\end{eqnarray*}
+From this we deduce, by Lemma \ref{lyapp},
+\begin{eqnarray}\label{bhj}
+V_p(\tilde{Q}_t)\leq |\tilde{Q}_0|+\lambda \int_0^t [-C_6(p)V_p(\tilde{Q}_s)+C_7(p)]\, ds -\int_0^t \lambda \langle H(\tilde{Q}_s,x),\nabla V_p(\tilde{Q}_s)d\tilde{B}^{\lambda}_s\rangle.
+\end{eqnarray}
+Define the stopping times $\sigma_n:=\inf\{t:|\tilde{Q}_t|>n\}$, $n\in\mathbb{N}$. The stochastic integral
+in \eqref{bhj} is a martingale up to $\sigma_n$ by boundedness of its integrand, so we obtain
+\begin{eqnarray*}
+E[V_p(\tilde{Q}_{t\wedge\sigma_n})]\leq E|\tilde{Q}_0|+\lambda\int_0^{t\wedge \sigma_n} [-C_6(p)
+E[V_p(\tilde{Q}_{s\wedge\sigma_n})]+C_7(p)]\, ds
+\end{eqnarray*}
+which, by Gr\"onwall's lemma, leads to 
+\begin{eqnarray*}
+E[V_p(\tilde{Q}_{t\wedge \sigma_n})]\leq \left(E|\tilde{Q}_0|+C_7(p)\lambda[\sigma_n\wedge t]
+\right)\exp\left(-\lambda C_6(p) [\sigma_n\wedge t]\right).
+\end{eqnarray*}
+Sending $n$ to $\infty$, we get
+\begin{eqnarray*}
+& & \sup_{t\in\mathbb{R}_+}E[V_p(\tilde{Q}_{t})]\leq E|\tilde{Q}_0|+C_7(p)\sup_{t\in\mathbb{R}_+}\left[\lambda t\exp(-\lambda C_6(p)t)\right]\\ &=& 
+E|\tilde{Q}_0|+C_7(p)\sup_{t\in\mathbb{R}_+}\left[t\exp(-C_6(p)t)\right]<\infty.
+\end{eqnarray*}
+This implies the first claim.
+From now on, we write $Q_t$ instead of $Q_t^{\lambda}(\mathbf{x})$.
+Lemma 7.1 of \cite{convex} implies that, for each integer $n\in\mathbb{N}$,
+$$
+E[V_p(Q_{n+1})]\leq \exp\{-\lambda a/3\}E[V_p(Q_n)]+\lambda C_{16}(p),
+$$ for some $C_{16}(p)$. (Note that $\beta=1$ in the cited lemma but
+this does not affect the validity of the arguments there, only the constants.)
+From this it follows that 
+\begin{eqnarray*}
+& & 
+\sup_{n\in\mathbb{N}}E[V_p(Q_{n+1})]\\
+&\leq& E[V_p(Q_0)]+ C_{16}(p)\frac{\lambda}{1-e^{-a\lambda/3}}\\
+&\leq& E[V_p(Q_0)]+ C_{16}(p)\frac{\lambda e}{a\lambda/3} =E[V_p(Q_0)]+ C_{16}(p)\frac{3e}{a},
+\end{eqnarray*}
+using the elementary $1-e^{-x}\geq\frac{x}{e}$, $x\in [0,1]$.
+
+Now take any $t\in\mathbb{R}_+$ with $n\leq t<n+1$ for some $n\in\mathbb{N}$.
+Then $t=\alpha n+(1-\alpha)(n+1)$ for some $\alpha\in (0,1]$.
+Notice that $Q_t=\alpha Q_n +(1-\alpha)Q_{n+1}+\sqrt{2/\beta}(\tilde{B}^{\lambda}_{t}-\tilde{B}^{\lambda}_n)-
+(1-\alpha)\sqrt{2/\beta}(\tilde{B}^{\lambda}_{n+1}-\tilde{B}^{\lambda}_n)$.
+Hence 
+\begin{eqnarray*}
+& & E^{1/p}[|Q_t|^p]\\
+&\leq&  E^{1/p}[|Q_n|^p]+[|Q_{n+1}|^p]+2E^{1/p}[\sqrt{2^p/\beta^p}|\tilde{B}^{\lambda}_{n+1}-\tilde{B}^{\lambda}_n|^p]\\
+&\leq& E^{1/p}[|Q_n|^p]+[|Q_{n+1}|^p]+C_{17}(p),
+\end{eqnarray*}
+for some $C_{17}(p)$. Hence the second claim follows, too. The third and fourth claims
+follow along the same lines as the first two (involving heavier notation).
+\end{proof}
+
+For each $R\geq 0$, let $B(R):=\{x\in\mathbb{R}^d:\, |x|\leq R\}$, the closed
+ball of radius $R$ around the origin.
+Define continuous-time the filtration
+$\mathcal{H}_t^{\lambda}:=\mathcal{F}_{\infty}\vee \mathcal{G}_{\lfloor t\rfloor}$, $t\in\mathbb{R}_+$ and
+the decreasing family of sigma-algebras 
+$\mathcal{H}_t^{\lambda+}:=\mathcal{G}^+_{\lfloor t\rfloor}$, $t\in\mathbb{R}_+$.
+
+
+\begin{lemma}\label{haa} For each
+$n\in\mathbb{N}$,
+there exists a measurable function 
+$$
+h_{\cdot,nT}:\Omega\times [nT,\infty)\times
+\mathbb{R}^d\to\mathbb{R}^d
+$$
+such that, for each $t\geq nT$ and $\theta\in\mathbb{R}^d$, $h_{t,nT}(\theta)(\omega)$
+is a version of $E[H(\theta,X_{\lfloor t\rfloor})\vert \mathcal{H}_{nT}^{\lambda}]$ and,
+for almost every $\omega\in\Omega$, $\theta\to h_{t,nT}(\theta)(\omega)$ is continuous.
+\end{lemma}
+\begin{proof}
+As $h_{t,nT}$, $t\in [k,k+1)$ can be assumed constant
+for each $k\in\mathbb{N}$, it suffices to prove the existence of a measurable
+$h_{t,nT}:\Omega\times\mathbb{R}^d\to\mathbb{R}^d$ for each fixed $t\geq nT$. 
+This follows from Lemma 8.5 of \cite{convex}.
+\end{proof}
+
+\begin{lemma}\label{kkk}
+There exist random variables $\Xi_n$, $n\in\mathbb{N}$ such that, for all $\theta\in\mathbb{R}^d$,
+$$
+\int_{nT}^{\infty}|h_{t,nT}(\theta)-h(\theta)|\, dt\leq \Xi_n,
+$$
+and for each $p\geq 1$ there exist $C_{18}(p)$ such that
+$$
+\sup_{n\in\mathbb{N}} E[\Xi_n^p]\leq C_{18}(p).
+$$
+\end{lemma}
+\begin{proof}
+Notice that, for any integer $k\geq nT$,
+$$
+E[H(\theta,E[X_k\vert\mathcal{H}_{nT}^{\lambda +}])\vert\mathcal{H}_{nT}^{\lambda}]=
+E[H(\theta, E[X_k\vert\mathcal{H}_{nT}^{\lambda +}])],
+$$
+since $\mathcal{H}_{nT}^{\lambda +}$ is independent
+of $\mathcal{H}_{nT}^{\lambda}$.
+This implies, for integers $k\geq \lfloor nT\rfloor+1$,
+\begin{eqnarray*}
+|h_{k,nT}(\theta)-h(\theta)| &\leq&\\
+\left|E[H(\theta,X_k)|\mathcal{H}_{nT}^{\lambda}]-
+E[H(\theta,E[X_k\vert\mathcal{H}_{nT}^{\lambda+}])\vert\mathcal{H}_{nT}^{\lambda}]\right|
+&+&\\
+\left|E[H(\theta, E[X_k\vert\mathcal{H}_{nT}^{\lambda+}])]-E[H(\theta,X_k)]\right| &\leq&\\
+KE[|X_k-E[X_k\vert\mathcal{H}_{nT}^{\lambda+}]|\vert\mathcal{H}_{nT}^{\lambda}]
++KE[|X_k-E[X_k\vert\mathcal{H}_{nT}^{\lambda+}]|] &\leq&\\
+K[\gamma_1^{\lfloor nT\rfloor}(k-\lfloor nT\rfloor,X) + E\gamma_1^{\lfloor nT\rfloor}(k-\lfloor nT\rfloor,X)], & &
+\end{eqnarray*}
+since $\mathcal{H}^{\lambda}_{nT}=\mathcal{H}^{\lambda}_{\lfloor nT\rfloor}$
+and $\mathcal{H}^{\lambda+}_{nT}=\mathcal{H}^{\lambda+}_{\lfloor nT\rfloor}$.
+For $nT\leq t<\lfloor nT\rfloor+1$, we can estimate
+\begin{eqnarray*}
+|h_{t,nT}(\theta)-h(\theta)|\leq 
+K|X_{\lfloor nT\rfloor}-EX_{\lfloor nT\rfloor}|+KE|X_{{\lfloor nT\rfloor}}-EX_{\lfloor nT\rfloor}|.
+\end{eqnarray*}
+Hence, noting that $h_{\cdot,nT}(\theta)$ is constant on each interval
+$[k,k+1)$, $k\in\mathbb{N}$, $k\geq nT$,
+$$
+\int_{nT}^{\infty}|h_{t,nT}(\theta)-h(\theta)|\, dt\leq K[\Gamma_1^{\lfloor nT\rfloor}(X)
++E\Gamma_1^{\lfloor nT\rfloor}(X)]+2KE|X_{\lfloor nT\rfloor}-EX_{\lfloor nT\rfloor}|.
+$$
+Since $X$ is conditionally $L$-mixing, $\sup_{n\in\mathbb{N}}E|X_n|<\infty$ 
+and
+$\sup_{n\in\mathbb{N}}E[(\Gamma_1^{\lfloor nT\rfloor}(X))^p]<\infty$ for every $p\geq 1$. The statement follows.
+\end{proof}
+
+\begin{lemma}\label{vizier} There is 
+$C_{19}$ such that,
+for each $0<\lambda\leq 1$,
+$$
+W_1(\mathcal{L}(L_t),\mathcal{L}(\tilde{Y}^{\lambda}_t(\mathbf{X})))\leq C_{19}\sqrt{\lambda}.
+$$
+\end{lemma}
+\begin{proof} We recall that 
+$\mathbf{X}$ refers to the $(\mathbb{R}^m)^{\mathbb{N}}$-valued random variable that has coordinates
+$\mathbf{X}_i=X_i$, $i\in\mathbb{N}$.
+Let $\overline{Z}^{\lambda}_t$, $t\in\mathbb{R}_+$ be the solution of
+$$
+d\overline{Z}^{\lambda}_t=-\lambda h(\overline{Z}^{\lambda}_t)\, dt+\sqrt{2\lambda}d\tilde{B}^{\lambda}_t,\
+\overline{Z}^{\lambda}_{nT}=\tilde{Y}^{\lambda}_{nT}(\mathbf{x}),
+$$
+on $[nT,(n+1)T)$, for each $n\in\mathbb{N}$. In this way we have defined
+a process on the whole time interval $\mathbb{R}_+$ which has right-continuous trajectories with left-hand limits.
+
+Fix $n\in\mathbb{N}$ and $t\in [nT,(n+1)T)$. Let us estimate, using Assumption \ref{lip}, 
+\begin{eqnarray*}
+\left|\tilde{Y}^{\lambda}_t(\mathbf{X})-\overline{Z}^{\lambda}_t\right|\leq \lambda \left\vert\int_{nT}^t
+\left[H(\tilde{Y}^{\lambda}_s(\mathbf{X}),X_{\lfloor s\rfloor})-h(\overline{Z}^{\lambda}_s)\right]\, ds\right\vert
+&\leq&\\
+\lambda\int_{nT}^t
+\left|H(\tilde{Y}^{\lambda}_s(\mathbf{X}),X_{\lfloor s\rfloor})-H(\overline{Z}^{\lambda}_s,
+X_{\lfloor s\rfloor})\right|\, ds &+&\\
+\lambda\left\vert\int_{nT}^t
+\left[H(\overline{Z}^{\lambda}_s,X_{\lfloor s\rfloor})-h_{s,nT}(\overline{Z}^{\lambda}_s)\right]\, ds\right\vert
+&+&\\
+\lambda\int_{nT}^t
+\left|h_{s,nT}(\overline{Z}^{\lambda}_s)-h(\overline{Z}^{\lambda}_s)\right|\, ds
+&\leq&\\
+\lambda K\int_{nT}^t
+\left|\tilde{Y}^{\lambda}_s(\mathbf{X})-\overline{Z}^{\lambda}_s\right|\, ds
+& +&\\
+\lambda\sup_{u\in [nT,(n+1)T)}\left\vert\int_{nT}^u
+\left[H(\overline{Z}^{\lambda}_s,X_{\lfloor s\rfloor})-h_{s,nT}(\overline{Z}^{\lambda}_s)\right]\, ds\right\vert
+&+&\\
+\lambda\int_{nT}^{\infty}
+\left|h_{s,nT}(\overline{Z}^{\lambda}_s)-h(\overline{Z}^{\lambda}_s)\right|\, ds
+& &\\
+\end{eqnarray*}
+Now let us apply Gr\"onwall's lemma and take the square of both sides.
+Using the elementary $(x+y)^2\leq 2(x^{2}+y^{2})$, $x,y\geq 0$,
+we arrive at
+\begin{eqnarray}\nonumber
+\left|\tilde{Y}^{\lambda}_t(\mathbf{X})-\overline{Z}^{\lambda}_t\right|^{2}
+\leq 2\lambda^{2} e^{2 K\lambda T}
+\left[\sup_{u\in [nT,(n+1)T)}\left\vert\int_{nT}^u
+\left[H(\overline{Z}^{\lambda}_s,X_{\lfloor s\rfloor})-h_{s,nT}(\overline{Z}^{\lambda}_s)\right]
+\, ds\right\vert^{2}\right.
+&+&\\
+\label{trafo}\left.
+\left(\int_{nT}^{\infty}
+\left|h_{s,nT}(\overline{Z}^{\lambda}_s)-h(\overline{Z}^{\lambda}_s)\right|\, ds\right)^{2}
+\right].
+\end{eqnarray}
+As $s\to h_{s,NT}(\overline{Z}^{\lambda}_s)$ is a.s. piecewise continuous (see Lemma \ref{haa}).
+properties of the Riemann integral guarantee that
+\begin{eqnarray}\nonumber
+\sup_{u\in [nT,(n+1)T)}\left\vert\int_{nT}^u
+\left[H(\overline{Z}^{\lambda}_s,X_{\lfloor s\rfloor})-h_{s,nT}(\overline{Z}^{\lambda}_s)\right]
+\, ds\right\vert^{2} &=&\\
+\lim_{N\to\infty}\frac{1}{N}\max_{1\leq k\leq \lfloor TN\rfloor}\left\vert\sum_{j=1}^k
+\left[H(\overline{Z}^{\lambda}_{nT+j/N},X_{\lfloor nT+j/N\rfloor})-h_{nT+j/N,nT}(\overline{Z}^{\lambda}_{nT+j/N})
+\right]
+\right\vert^{2},\label{hostii}
+& &
+\end{eqnarray}
+a.s., with $N$ ranging over integers. The process
+$$
+G_j:=X_{\lfloor nT+j/N\rfloor},\ j\in\mathbb{N}
+$$
+is adapted to $\mathcal{R}_j:=\mathcal{H}_{\lfloor nT+j/n\rfloor}^{\lambda}$, $j\in\mathbb{N}$
+and it satisfies, for all $i\in\mathbb{N}$,
+\begin{equation}\label{popu}
+M_{p}^0(G,B(i))=M_{p}^{\lfloor nT\rfloor}(X,B(i))\mbox{ and }
+\Gamma_{p}^0(G,B(i))\leq N \Gamma^{\lfloor nT\rfloor}_{p}(X,B(i)),
+\end{equation}
+for $p\geq 1$, as a moment of reflection shows.
+Here $\Gamma_{p}^0(G,B(i))$, $M_{p}^0(G,B(i))$ are calculated with respect to $(\mathcal{R}_j,\mathcal{R}^+_j)_{j\in\mathbb{N}}$, where $\mathcal{R}_j^+:=\mathcal{H}_{\lfloor nT+j/n\rfloor}^{\lambda +}$, $j\in\mathbb{N}$ while $\Gamma^{\lfloor nT\rfloor}_{p}(G,B(i))$, $M_{p}^{\lfloor nT\rfloor}(X,B(i))$ are calculated
+with respect to $(\mathcal{G}_j,\mathcal{G}_j^+)_{j\in\mathbb{N}}$.
+
+Introduce the events $F_i:=\{i\leq \sup_{s\in [nT,(n+1)T)}|\overline{Z}^{\lambda}_s|<i+1\}$, $i\in\mathbb{N}$
+and fix $i$ for the moment.
+We will apply Theorem \ref{estim} to the process
+$$
+W_j:=\left(H(\overline{Z}^{\lambda}_{nT+j/N},X_{\lfloor nT+j/N\rfloor})-h_{nT+j/n,nT}(\overline{Z}^{\lambda}_{nT+j/N})\right)1_{F_i},\ 
+j\in\mathbb{N}.
+$$
+Clearly, $E[W_j\vert\mathcal{R}_0]=E[W_j\vert\mathcal{H}_{\lfloor nT\rfloor}^{\lambda}]=0$. From Lemma \ref{below} we know that the estimates \eqref{mamma} 
+(resp. \eqref{gomma}) hold for $M^{\lfloor nT\rfloor}_{p}(H(\theta,G),B(i))$
+(resp. $\Gamma^{\lfloor nT\rfloor}_{p}(H(\theta,G),B(i))$). Lemma 6.3 of \cite{4} implies that 
+the process $\bar{W}_j:=H(\overline{Z}^{\lambda}_{nT+j/N},X_{\lfloor nT+j/N\rfloor})1_{F_i}$, $j\in\mathbb{N}$ satisfies
+$$
+M^0_{p}(\bar{W})\leq C_{33}(p)[M_{p}^{\lfloor nT\rfloor}(X)+i+1],
+$$
+and
+$$
+\Gamma^0_{p}(\bar{W})\leq 2KN\Gamma^{\lfloor nT\rfloor}_{p}(X).
+$$
+Then, by Remark 6.4 of \cite{4}, 
+$$
+M^0_{p}(W)\leq 2{C}_{33}(p)[M^{\lfloor nT\rfloor}_{p}(X)+i+1],\
+\Gamma^0_{p}(W)\leq 2KN\Gamma^{\lfloor nT\rfloor}_{p}(X).
+$$
+
+Apply Theorem \ref{estim} with an arbitrary $r>2$ at $k=0$. For definiteness, we take $r:=3$. We obtain
+\begin{eqnarray*}
+& & E^{1/2}\left[\max_{1\leq k\leq \lfloor TN\rfloor}\left\vert\sum_{j=1}^k
+[H(\overline{Z}^{\lambda}_{nT+j/N},X_{\lfloor nT+j/N\rfloor})-h_{s,nT}(\overline{Z}^{\lambda}_{nT+j/N})]
+\right\vert^{2} 1_{F_i} \vert \mathcal{H}_{nT}^{\lambda}\right]\\ &\leq&
+E^{1/3}\left[\max_{1\leq k\leq \lfloor TN\rfloor}\left\vert\sum_{j=1}^k
+[H(\overline{Z}^{\lambda}_{nT+j/N},X_{\lfloor nT+j/N\rfloor})-h_{s,nT}(\overline{Z}^{\lambda}_{nT+j/N})]
+\right\vert^{3} 1_{F_i} \vert \mathcal{H}_{nT}^{\lambda}\right]\\ &\leq&
+C_{99}(3)\sqrt{TN}\sqrt{2C_{33}(3)[M^{\lfloor nT\rfloor}_{3}(X)+1]}
+\sqrt{2KN\Gamma^{\lfloor nT\rfloor}_{3}(X)}1_{F_i}, 
+\end{eqnarray*}
+whence, by the conditional Fatou lemma and \eqref{hostii},
+\begin{eqnarray*}
+& & E^{1/2}\left[\sup_{u\in [nT,(n+1)T)}\left\vert\int_{nT}^u
+[H(\overline{Z}^{\lambda}_s,X_{\lfloor s\rfloor})-h_{s,nT}(\overline{Z}^{\lambda}_s)]
+\, ds\right\vert^{2}1_{F_i}\vert\mathcal{H}_{nT}^{\lambda}\right]\\ &\leq&
+C_{99}(3)\sqrt{T}\sqrt{2{C}_{33}(3)[M^{\lfloor nT\rfloor}_{3}(X)+i+1]}\sqrt{2K\Gamma^{\lfloor nT\rfloor}_{3}(X)}1_{F_i}.
+\end{eqnarray*} Fix $p_1\geq 1$, to be chosen later.
+We can then estimate, using Cauchy's inequality (twice) and Lemma \ref{folklore},
+\begin{eqnarray*}
+& & E\left[\sup_{u\in [nT,(n+1)T)}\left\vert\int_{nT}^u
+[H(\overline{Z}^{\lambda}_s,X_{\lfloor s\rfloor})-h_{s,nT}(\overline{Z}^{\lambda}_s)]
+\, ds\right\vert^{2}1_{F_i}\right]\\ &\leq&
+4KC_{99}^2(3)C_{33}(3){T}\sum_{i=0}^{\infty}E\left[1_{F_i}
+[M^{\lfloor nT\rfloor}_{3}(X)+i+1]\Gamma^{\lfloor nT\rfloor}_{3}(X)
+\right]\\ 
+&\leq& 4KC^2_{99}(3)C_{33}(3)T\sum_{i=0}^{\infty}P^{1/2}(F_i)
+\sqrt{E\left[([(M^{\lfloor nT\rfloor}_{3}(X)+i+1]\Gamma^{\lfloor nT\rfloor}_{3}(X))^2\right]}\\
+&\leq& 4KC^2_{99}(3) C_{33}(3)T\sum_{i=0}^{\infty}P^{1/2}(F_i)
+\sqrt[4]{E[(M^{\lfloor nT\rfloor}_{3}(X)+i+1)^4]}\sqrt[4]{E[(\Gamma^{\lfloor nT\rfloor}_{3}(X))^4]}\\
+&\leq& 4KC^2_{99}(3)C_{33}(3){T}\sum_{i=0}^{\infty}
+\sqrt{\frac{E\left[\sup_{s\in [nT,(n+1)T)}(|\overline{Z}^{\lambda}_{y}|+1)^{2p_1}\right]}{(i+1)^{p_1}}}
+\sqrt[4]{E[(M^{\lfloor nT\rfloor}_{3}(X)+i+1)^4]}\sqrt[4]{E[(\Gamma^{\lfloor nT\rfloor}_{3}(X))^4]}\\
+&\leq& 4KC^2_{99}(3){C_{33}(3)}C_{50}(p_1){T}
+\sum_{i=0}^{\infty}\sqrt{\frac{1}{(i+1)^{p_1}}}
+\left[\sqrt[4]{E[(M^{\lfloor nT\rfloor}_{3}(X))^4]}+(i+1)\right]\sqrt[4]{E[(\Gamma^{\lfloor nT\rfloor}_{3}(X))^4]}\\
+&\leq & C_{20}\frac{1}{\lambda}\sum_{i=0}^{\infty} \frac{1+(i+1)}{(i+1)^{p_1/2}}
+\end{eqnarray*}
+for some $C_{20}$. Hence we set $p_1:=5$ (any $p_1>4$ would do) and obtain from \eqref{trafo} finally 
+\begin{eqnarray}\nonumber
+& & \tilde{W}_{2}(\mathcal{L}(\tilde{Y}^{\lambda}_t(\mathbf{X})),\mathcal{L}(\overline{Z}^{\lambda}_t))\\
+\nonumber &\leq& E^{1/2}\left|\tilde{Y}^{\lambda}_t(\mathbf{X})-\overline{Z}^{\lambda}_t\right|^{2}\\
+\nonumber &\leq&  \sqrt{2} e^K\sqrt{C_{20}\frac{1}{\lambda}\lambda^2+\lambda^2 E[\Xi_n^2]}\\
+\label{pad} &\leq& C_{21} \sqrt{\lambda},
+\end{eqnarray} 
+with some $C_{21}$.
+A moment's reflection shows that the same argument also gives us
+\begin{equation}\label{left}
+\tilde{W}_2(\mathcal{L}\tilde{Y}^{\lambda}_{nT}(\mathbf{X}),\mathcal{L}(\overline{Z}^{\lambda}_{nT-}))\leq C_{21}\sqrt{\lambda},
+\end{equation}
+(note that $\tilde{Y}^{\lambda}_{\cdot}(\mathbf{X})$ has continuous
+trajectories while $\overline{Z}^{\lambda}_{\cdot}$ is merely right-continuous
+with left-hand limits).
+
+We will need some more notation. Let $Z^{\lambda}(t,s,\vartheta)$, $t\geq s$
+denote the solution of the SDE
+$$
+dZ^{\lambda}(t,s,\vartheta)=-\lambda h(Z^{\lambda}(t,s,\vartheta))\, dt+\sqrt{\frac{2\lambda}{\beta}}
+d\tilde{B}^{\lambda}_t,
+$$
+with initial condition $Z^{\lambda}(s,s,\vartheta):=\vartheta$ for some $\mathcal{H}_s^{\lambda}$-measurable
+random variable $\vartheta$. Notice that
+$$
+\overline{Z}^{\lambda}_t=Z^{\lambda}(t,nT,Y_{nT}),\ nT\leq t<(n+1)T,
+$$
+for each $n\in\mathbb{N}$ and that $L^{\lambda}_t=
+Z^{\lambda}(t,0,\theta_0)$.
+
+We now turn to estimating $W_1(\mathcal{L}(\overline{Z}^{\lambda}_t),\mathcal{L}(L^{\lambda}_t))$. 
+Fix $n\in\mathbb{N}$ and $t\in [nT,(n+1)T)$. Now we may write, using
+the triangle inequality, the definition of $\overline{Z}^{\lambda}$, \eqref{lucia}, \eqref{bartoli},
+Lemma \ref{mr} and \eqref{left},
+\begin{eqnarray*}
+& & W_1(\mathcal{L}(\overline{Z}^{\lambda}_t),\mathcal{L}(L^{\lambda}_t))
+\\ &\leq&
+\sum_{k=1}^n W_1(\mathcal{L}(Z^{\lambda}(t,kT,Y_{kT})),
+\mathcal{L}(Z^{\lambda}(t,(k-1)T,L^{\lambda}_{(k-1)T}))\\ &=&
+\sum_{k=1}^n W_1(\mathcal{L}(Z^{\lambda}(t,kT,L^{\lambda}_{kT})),
+\mathcal{L}(Z^{\lambda}(t,kT,Z^{\lambda}(kT,(k-1)T,L^{\lambda}_{(k-1)T}))))
+\\ &\leq &
+\sum_{k=1}^n w_{1}(\mathcal{L}(Z^{\lambda}(t,kT,L^{\lambda}_{kT})),
+\mathcal{L}(Z^{\lambda}(t,kT,Z^{\lambda}(kT,(k-1)T,L^{\lambda}_{(k-1)T}))))
+\\ &\leq &
+\sum_{k=1}^n \exp\left(-\frac{C_8}{2}(n-k)\right)
+w_{1}(\mathcal{L}(L^{\lambda}_{kT}),\mathcal{L}(Z^{\lambda}(kT,(k-1)T,L^{\lambda}_{(k-1)T})))\\ 
+&=&
+\sum_{k=1}^n \exp\left(-\frac{C_8}{2}(n-k)\right)
+w_{1}(\mathcal{L}(L^{\lambda}_{kT}),\mathcal{L}(\overline{Z}^{\lambda}_{kT-}))\\ 
+&\leq&
+\frac{1}{1-\exp\left(-\frac{C_8}{2}\right)}\max_{1\leq k\leq n}
+w_{1}(\mathcal{L}(L^{\lambda}_{kT}),\mathcal{L}(\overline{Z}^{\lambda}_{kT-}))\\ 
+&\leq &
+\frac{1}{1-\exp\left(-\frac{C_8}{2}\right)}
+\max_{1\leq k\leq n}
+\tilde{W}_{2}(\mathcal{L}(L^{\lambda}_{kT}),\mathcal{L}(\overline{Z}^{\lambda}_{kT-})
+[1+ \mathcal{L}(L^{\lambda}_{kT})(V_{3})+\mathcal{L}(\overline{Z}^{\lambda}_{kT-})(V_{3})]
+\\
+&\leq&  C_{22}\sqrt{\lambda},
+\end{eqnarray*}
+for a suitable $C_{22}$. 
+
+Now, putting together our estimations,
+we arrive at
+\begin{eqnarray*}
+& & W_1(\mathcal{L}(\tilde{Y}^{\lambda}_t(\mathbf{X})),\mathcal{L}(L^{\lambda}_t))\\
+&\leq& 
+W_1(\mathcal{L}(\tilde{Y}^{\lambda}_t(\mathbf{X})),\mathcal{L}(\overline{Z}^{\lambda}_t))+ 
+W_1(\mathcal{L}(\overline{Z}^{\lambda}_t),\mathcal{L}(L^{\lambda}_t))\\
+&\leq& [C_{21}+C_{22}]\lambda^{1/2},
+\end{eqnarray*}
+which finishes the proof.
+\end{proof}
+
+Let $\mu_0\in\cap_{p\geq 1}\mathcal{P}_{\, V_p}$. For $0\leq s\leq t$ let 
+$\tilde{R}_s^t(\lambda,\mathbf{x}):=\mathcal{L}(\tilde{Y}_t^{\lambda}(\mathbf{x}))$
+where $\tilde{Y}_u^{\lambda}(\mathbf{x})$, $s\leq u\leq t$ is the solution 
+of \eqref{mah} with an initial condition $\tilde{Y}_s^{\lambda}(\mathbf{x})=\hat{\theta}_0$
+where $\hat{\theta}_0$ is independent of $\mathcal{F}_{\infty}$ with law $\mu_0$.
+Analogously, ${R}_s^t(\lambda,\mathbf{x}):=\mathcal{L}({Y}_t^{\lambda}(\mathbf{x}))$
+where ${Y}_u^{\lambda}(\mathbf{x})$, $s\leq u\leq t$ is the solution 
+of \eqref{mahh} with an initial condition ${Y}_s^{\lambda}(\mathbf{x})=\hat{\theta}_0$
+where $\hat{\theta}_0$ is independent of $\mathcal{F}_{\infty}$ with law $\mu_0$.
+
+
+\begin{lemma}\label{kl} There is 
+$C_{23}(\mathbf{x})$ such that, for each $0<\lambda\leq 1$, 
+$$
+W_1(\mathcal{L}(\tilde{Y}^{\lambda}_t(\mathbf{x})),
+\mathcal{L}(Y^{\lambda}_t(\mathbf{x})))\leq
+C_{23}(\mathbf{x})\lambda^{1/2},\ \mathbf{x}\in(\mathbb{R}^m)^{\mathbb{N}}.
+$$
+\end{lemma}
+\begin{proof} In this proof
+we will use the shorthand notations $\tilde{R}_l:=\tilde{R}_{lT}^{(l+1)t}(\mathbf{x},\lambda)$, 
+$R_l={R}_{lT}^{(l+1)t}(\mathbf{x},\lambda)$, $l\in\mathbb{N}$
+and set $\nu_0=\mathrm{Law}(\theta_0)$.
+Let $k\in\mathbb{N}$ be the unique integer such that $t=kT+u$ for some
+$0\leq u<T$. Let us estimate, using the definitions of the processes $\tilde{Y},Y$;
+the triangle inequality; and \eqref{lucia};
+\begin{eqnarray*}
+& & W_1(\mathcal{L}(\tilde{Y}^{\lambda}_t(\mathbf{x})),
+\mathcal{L}(Y^{\lambda}_t(\mathbf{x})))\\
+&=& W_1(\tilde{R}^{t}_{kT}(\mathbf{x},\lambda)\tilde{R}_{k-1}\cdots \tilde{R}_0\nu_0,
+{R}^{t}_{kT}(\mathbf{x},\lambda)R_{k-1}\cdots R_0\nu_0)\\
+&\leq& W_1(\tilde{R}^{t}_{kT}(\mathbf{x},\lambda){R}_{k-1}\cdots R_0
+\nu_0,
+{R}^{t}_{kT}(\mathbf{x},\lambda){R}_{k-1}\cdots R_0\nu_0)\\ &+& \sum_{l=0}^{k-1}
+W_1({R}^{t}_{kT}(\mathbf{x},\lambda)\tilde{R}_{k-1}\cdots \tilde{R}_l
+R_{l-1}\cdots R_0
+\nu_0,
+{R}^{t}_{kT}(\mathbf{x},\lambda)\tilde{R}_{k-1}\cdots \tilde{R}_{l+1}
+R_{l}\cdots R_0\nu_0)\\
+&\leq& w_1(\tilde{R}^{t}_{kT}(\mathbf{x},\lambda){R}_{k-1}\cdots R_0
+\nu_0,
+{R}^{t}_{kT}(\mathbf{x},\lambda){R}_{k-1}\cdots R_0\nu_0)\\ &+& \sum_{l=0}^{k-1}
+w_1({R}^{t}_{kT}(\mathbf{x},\lambda)\tilde{R}_{k-1}\cdots \tilde{R}_l
+R_{l-1}\cdots R_0
+\nu_0,
+{R}^{t}_{kT}(\mathbf{x},\lambda)\tilde{R}_{k-1}\cdots \tilde{R}_{l+1}
+R_{l}\cdots R_0\nu_0)\\
+&\leq& w_1(\tilde{R}^{t}_{kT}(\mathbf{x},\lambda){R}_{k-1}\cdots R_0
+\nu_0,
+{R}^{t}_{kT}(\mathbf{x},\lambda){R}_{k-1}\cdots R_0\nu_0)\\ &+& 
+\sum_{l=0}^{k-1} e^{-C_8(k-l-1)/2}
+w_1(\tilde{R}_lR_{l-1})\cdots R_0
+\nu_0,{R}_{l}
+\cdots {R}_0\nu_0).
+\end{eqnarray*}
+Fixing $l$ for a moment, we proceed by estimating the individual terms in the latter sum.
+Fix some $p_2\geq 1$ to be chosen later and let $p_2'$ satisfy $(1/p_2)+(1/p_2')=1$.
+
+We introduce an auxiliary process: let
+$\hat{Y}^{\lambda}_s(\mathbf{x})$, $s\in [(l-1)T,lT]$ satisfy the equation
+$$
+d\hat{Y}^{\lambda}_s(\mathbf{x})=-\lambda H(\hat{Y}^{\lambda}_s(\mathbf{x}),x_{\lfloor s\rfloor})\, dt+\sqrt{\frac{2\lambda}{\beta}}dB_s^{\lambda},\ \hat{Y}^{\lambda}_{l-1}=Y^{\lambda}_{l-1}(\mathbf{x}).
+$$
+
+For $a<b$, $\mathbf{C}[a,b]$ denotes the Banach space of $\mathbb{R}^d$-valued
+continuous functions on the interval $[a,b]$.
+Let $\hat{\mathcal{Q}}$ denote the law of the process $\hat{Y}^{\lambda}_s(\mathbf{x})$, $s\in [(l-1)T,lT]$ on $\mathbf{C}[(l-1)T,lT]$.
+Similarly, let $\mathcal{Q}$ denote the law of $Y_s^{\lambda}(\mathbf{x})$, $s\in [(l-1)T,lT]$ and 
+$\mathcal{W}$ the law of $\mathbf{B}:=(B^{\lambda}_s)_{s\in [(l-1)T,lT]}$. Theorem 7.9 of \cite{ls} implies that these three
+probability laws are equivalent and, denoting by $d\mathcal{W}/d\mathcal{Q}(w)$ and 
+$d\mathcal{W}/d\hat{\mathcal{Q}}(w)$, $w\in\mathbf{C}[(l-1)T,lT]$ their respective
+Radon-Nykodim derivatives, we have
+\begin{eqnarray*}
+& &\frac{d\mathcal{W}}{d\mathcal{Q}}(\mathbf{B})\\
+&=& \exp\left\{\frac{\lambda}{\sqrt{2}}\int_{(l-1)T}^{lT} H(B^{\lambda}_{\lfloor s\rfloor},x_{\lfloor s\rfloor})
+d{B}^{\lambda}_{s}
+-\frac{\lambda^2}{4}\int_{(l-1)T}^{lT} 
+|H(B^{\lambda}_{\lfloor s\rfloor},x_{\lfloor s\rfloor})|^2\, ds\right\},\\
+& &\frac{d\mathcal{W}}{d\hat{\mathcal{Q}}}(\mathbf{B})\\
+&=& \exp\left\{\frac{\lambda}{\sqrt{2}}\int_{(l-1)T}^{lT} H(B^{\lambda}_s,x_{\lfloor s\rfloor})d{B}^{\lambda}_{s}
+-\frac{\lambda^2}{4}\int_{(l-1)T}^{lT} |H(B^{\lambda}_s,x_{\lfloor s\rfloor})|^2
+\, ds\right\}.
+\end{eqnarray*}
+
+It follows then that
+\begin{eqnarray}\label{dian}
+& &\frac{d\mathcal{Q}}{d\hat{\mathcal{Q}}}(\mathbf{B})\\
+\nonumber &=& \exp\left\{\frac{\lambda}{\sqrt{2}}\int_{(l-1)T}^{lT} [H(B^{\lambda}_s,x_{\lfloor s\rfloor}-
+H(B^{\lambda}_{\lfloor s\rfloor},x_{\lfloor s\rfloor})]d{B}^{\lambda}_{s}
++\frac{\lambda^2}{4}\int_{(l-1)T}^{lT} 
+|H(B^{\lambda}_{\lfloor s\rfloor},x_{\lfloor s\rfloor})|^2-|H(B^{\lambda}_s,x_{\lfloor s\rfloor})|^2\, ds\right\}.
+\end{eqnarray}
+
+We denote by $\mathcal{D}(\mu \Vert \nu)$
+the Kullback-Leibler distance of $\mu,\nu\in\mathcal{P}$.
+
+We define $\psi_{lT}(w):=w_{lT}$, $w\in\mathbf{C}[(l-1)T,lT]$.
+Take an arbitrary measurable $f:\mathbb{R}^d\to\mathbb{R}$ satisfying 
+$|f(\cdot)|\leq \overline{V}_{p_2}(\cdot)$. Then 
+\begin{eqnarray*}
+& & \left| \int_{\mathbb{R}^d} f(\theta)
+[\mathrm{Law}(\hat{Y}_{lT}^{\lambda}(\mathbf{x}))-\mathrm{Law}({Y}_{lT}^{\lambda}(\mathbf{x}))](d\theta)\right|\\
+&=& 
+\left| \int_{\mathbf{C}[(l-1)T,lT]} f(\psi_{lT}(w))[\hat{\mathcal{Q}}-
+\mathcal{Q}]\, dw\right|\\
+&\leq & \sqrt{2}[\hat{\mathcal{Q}}(\psi_{lT}(V_{2p_2}))+\mathcal{Q}(\psi_{lT}(V_{2p_2}))]^{1/2}
+\mathcal{D}^{1/2}(\hat{\mathcal{Q}}\Vert\mathcal{Q})\\
+&=& \sqrt{2}[\mathrm{Law}(\hat{Y}_{lT})(V_{2p_2})+\mathrm{Law}({Y}^{\lambda}_{lT}(\mathbf{x}))(V_{2p_2})]^{1/2}
+\mathcal{D}^{1/2}(\hat{\mathcal{Q}}\Vert \mathcal{Q})
+\end{eqnarray*}
+follows from the argument of Lemma 24 in \cite{unadjusted} (which is a Pinsker-type inequality).
+As $H$ has at most linear growth, the stochastic integral in \eqref{dian} 
+has mean $0$. We continue our estimations, using Assumption \ref{lip} and \eqref{jojo}
+\begin{eqnarray*}
+& & \mathcal{D}(\hat{\mathcal{Q}}\Vert\mathcal{Q})\\
+&=& E[\ln(d\hat{\mathcal{Q}}/d\mathcal{Q}(\mathbf{B})]\\
+&=& \frac{\lambda^2}{4}\int_{(l-1)T}^{lT} 
+E|H(B^{\lambda}_{\lfloor s\rfloor},x_{\lfloor s\rfloor})|^2
+-|H(B^{\lambda}_s,x_{\lfloor s\rfloor})|^2\, ds\\
+&\leq& \frac{\lambda^2}{4}\int_{(l-1)T}^{lT} 
+E\langle H(B^{\lambda}_{\lfloor s\rfloor},x_{\lfloor s\rfloor})
+-H(B^{\lambda}_s,x_{\lfloor s\rfloor}),H(B^{\lambda}_{\lfloor s\rfloor},x_{\lfloor s\rfloor})
++H(B^{\lambda}_s,x_{\lfloor s\rfloor})\rangle\, ds\\
+&\leq& 
+\frac{\lambda^2}{4}\int_{(l-1)T}^{lT} 
+E|H(B^{\lambda}_{\lfloor s\rfloor},x_{\lfloor s\rfloor})
+-H(B^{\lambda}_s,x_{\lfloor s\rfloor})|\, |H(B^{\lambda}_{\lfloor s\rfloor},x_{\lfloor s\rfloor})
++H(B^{\lambda}_s,x_{\lfloor s\rfloor})|\, ds\\
+&\leq& \frac{K\lambda^2}{4} \int_{(l-1)T}^{lT} 
+E|B^{\lambda}_s-B^{\lambda}_{\lfloor s\rfloor}|\, [K[|B^{\lambda}_{\lfloor s\rfloor}|+|B^{\lambda}_s|+
+2|x_{\lfloor s\rfloor}|]+H^*] \, ds\\
+&\leq & C_{23}'\frac{K\lambda^2}{4} T [|x_{\lfloor}|+1]\\
+&=& C_{23}(\mathbf{x})\lambda.
+\end{eqnarray*}
+for suitable $C_{23}'$, $C_{23}(\mathbf{x})$.
+\end{proof}
+
+\begin{lemma}\label{ae} For each $p\geq 1$ and for all
+$\mu,\nu\in\mathcal{P}_{V_p}$,
+$$
+\inf_{\zeta\in\mathcal{C}(\mu,\nu)}
+\left(\int_{\mathbb{R}^d}\int_{\mathbb{R}^d} |x-y|^{p}\zeta(dx,dy)\right)^{1/p}
+\leq 2^{1/p}||\mu-\nu||_{\overline{V}_{p}},$$
+where $\overline{V}_p(\theta)=|\theta|^{p}$.
+\end{lemma}
+\begin{proof}
+See Theorem 6.15 of \cite{villani}.
+\end{proof}
+
+
+
+
+
+\begin{corollary}\label{crux}
+For each $0<\lambda\leq 1$ and $t\in\mathbb{R}_+$,
+$$
+W_1(\mathcal{L}(\tilde{Y}^{\lambda}_t(\mathbf{X})),
+\mathcal{L}(Y^{\lambda}_t(\mathbf{X})))\leq
+C_{24}\lambda^{1/2}
+$$
+holds for some $C_24$.
+\end{corollary}
+\begin{proof}
+Let us consider $\mathcal{P}(\mathbb{R}^{2d})$, the set of 
+probabilities on $\mathcal{B}(\mathbb{R}^{2d})$ equipped with some complete
+metric inducing weak convergence. This is a Polish space.
+Let us denote by $\mathcal{X}$ the Borel sigma-field of $(\mathbb{R}^m)^{\mathbb{N}}$
+and let $\zeta$ denote the law of $\mathbf{X}$.
+Define
+\begin{eqnarray*}
+& & A:=\{(\mathbf{x},\pi)\in (\mathbb{R}^m)^{\mathbb{N}}\times\mathcal{P}(\mathbb{R}^{2d}):\\
+& & \pi(\cdot\times\mathbb{R}^d)=\mathcal{L}(\tilde{Y}^{\lambda}_t(\mathbf{x})),
+\pi(\mathbb{R}^d\times\cdot)=\mathcal{L}(Y^{\lambda}_t(\mathbf{x})),\\
+& & \int_{\mathbb{R}^{2d}} [|x-y|\wedge 1]\pi(dx,dy)\leq C_{23}(\mathbf{x})\lambda^{1/2}\}.
+\end{eqnarray*} 
+Lemma \ref{kl} implies that for each $\mathbf{x}\in(\mathbb{R}^{m})^{\mathbb{N}}$
+there is $\pi\in\mathcal{P}(\mathbb{R}^{2d})$ such that $(\mathbf{x},\pi)\in A$.
+(note that the infimum in the definition of $W_1$ is always attained, see Theorem 4.1 of \cite{villani}).
+Furthermore, $A\in\mathcal{X}\times \mathcal{B}(\mathbb{R}^{2d})$.
+Hence the measurable selection theorem (see III.44-45. of \cite{dm})
+implies that there is $\mathcal{X}/\mathcal{B}(\mathbb{R}^{2d})$-measurable 
+$F:(\mathbb{R}^m)^{\mathbb{N}}\to \mathcal{P}(\mathbb{R}^{2d})$ such that,
+for $\zeta$-almost every $\mathbf{x}\in (\mathbb{R}^m)^{\mathbb{N}}$,
+$(\mathbf{x},F(\mathbf{x}))\in A$. Now let us define the probability
+$$
+\upsilon(C\times D):= \int_{(\mathbb{R}^m)^{\mathbb{N}}}
+F(\mathbf{x})(C\times D)\zeta(d\mathbf{x}),\ C,D\in\mathcal{B}(\mathbb{R}^{d}).
+$$
+By construction,
+\begin{eqnarray*}
+& & W_1(\mathcal{L}(\tilde{Y}^{\lambda}_t(\mathbf{X})),
+\mathcal{L}(Y^{\lambda}_t(\mathbf{X})))\\
+&\leq& \int_{\mathbb{R}^{2d}}|x-y|\upsilon(dx,dy)\\
+&=& \int_{(\mathbb{R}^m)^{\mathbb{N}}} \int_{\mathbb{R}^{2d}} [|x-y|\wedge 1]F(\mathbf{x})(dx,dy)
+\zeta(d\mathbf{x})\\
+&\leq &  \int_{(\mathbb{R}^m)^{\mathbb{N}}} C_{23}(\mathbf{x})\lambda^{1/2} \zeta(d\mathbf{x})\\
+&=& C_{24}\lambda^{1/2}.
+\end{eqnarray*}
+One has to verify that the constant $C_{23}(\mathbf{x})$ is indeed $\zeta$-integrable. Maybe here one
+will have to play with the maximum process of $X_n$ and we will lose some power of $\lambda$ so
+eventually it will perhaps be $\lambda^{1/2-\epsilon}$ only. Needs further work.
+\end{proof}
+
+\begin{lemma}
+$A\in\mathcal{X}\times \mathcal{B}(\mathbb{R}^{2d})$
+\end{lemma}
+\begin{proof} Intricate measure theory to be done.
+\end{proof}
+
+
+\begin{lemma}\label{folklore} There is 
+$C_{45}(p,E[V_p(\tilde{Y}^{\lambda}_{nT}(\mathbf{X})])$ such that
+$$
+EV_p(\sup_{t\in [nT,(n+1)T)}|\overline{Z}^{\lambda}_t|)\leq C_{45}(p,E[V_p(\tilde{Y}^{\lambda}_{nT}(\mathbf{X})]).
+$$
+\end{lemma}
+\begin{proof}
+Performing the time-change $Z_t:=\overline{Z}^{\lambda}_{t/\lambda}$, $t\in\mathbb{R}_+$ we see
+that, on $t\in [n,(n+1))$,
+$$
+dZ_t=-h(Z_t)dt+\sqrt{2}dB_t.
+$$
+The lemma states that the $L_p$ norm of the maximum process of $Z_t$ on the given interval can be
+estimated by a quantity depending only on the $L_p$ norm of its initial condition, $p$ (and the
+function $h$, but only via $K,H^*$). But this is a folklore result.
+\end{proof}
+
+
+\begin{proof}[Proof of Theorem \ref{main}.]
+Under our assumptions, $\pi_{\beta}$ is a stationary law for $L^{\lambda}_t$, $t\in\mathbb{R}_+$.
+As \begin{eqnarray*}
+& & W_1(\mathcal{L}(\Theta^{\lambda}_t),\pi_{\beta})\\
+&\leq& W_1(\mathcal{L}(\Theta^{\lambda}_t),\mathcal{L}(\tilde{Y}^{\lambda}_t(\mathbf{X}))
++ W_1(\mathcal{L}(\tilde{Y}^{\lambda}_t(\mathbf{X})),\mathcal{L}(L^{\lambda}_t))+
+W_1(\mathcal{L}(L^{\lambda}_t),\pi_{\beta}) \\
+&\leq& [C_{19}+C_{24}]\lambda^{\chi}+C_7 e^{-C_8\lambda t}w_1(\theta_0,\pi_{\beta}),
+\end{eqnarray*}
+by Lemmata \ref{kl}, \ref{vizier}, by Theorem \ref{contra} and by \eqref{lucia}.
+This implies the statement.
+\end{proof}
+
+\begin{proof}[Proof of Theorem \ref{mainv}.] 
+The arguments for the proof of Theorem \ref{main} can be repeated, writing 
+$\tilde{W}_1$ instead of both $W_1$ and $w_1$ and using Corollary 2 in \cite{eberleold} instead of Corollary 2.3
+in \cite{eberle}.
+\end{proof}
+
+\begin{proof}[Proof of Theorem \ref{mainv}.] 
+The arguments for the proof of Theorem \ref{main} can be repeated, writing 
+$\tilde{W}_2$ instead of both $W_1$ and $w_1$ and using Proposition 1 of \cite{aew} instead of Corollary 2.3
+in \cite{eberle}.
+\end{proof}
+
+\begin{remark}\label{betad} {\rm A careful examination of our estimates reveals how $C_0$, $C_1$
+and $C_2$ in Theorem \ref{main} depend on $\beta$ and on $d$. Elaborate.}
+\end{remark}
+
+
+\section{Conditional $L$-mixing}\label{lm}
+
+$L$-mixing processes and random fields
+were introduced in \cite{laci1}. In
+\cite{4}, the closely related concept of \emph{conditional} $L$-mixing
+was created. We
+define this concept below and recall some related results. 
+This section is an almost
+exact replica of Section 2 in \cite{convex}.
+
+We assume that the probability space is equipped
+with a discrete-time filtration $\mathcal{R}_n$, $n\in\mathbb{N}$ as well as with a decreasing sequence of sigma-fields $\mathcal{R}_n^+$, $n\in\mathbb{N}$ such that $\mathcal{R}_n$ is
+independent of $\mathcal{R}_n^+$, for all $n$.
+
+Fix an integer $d\geq 1$ and let $D\subset \mathbb{R}^d$ be a set of parameters. A measurable function
+$X:\mathbb{N}\times D\times\Omega\to\mathbb{R}^m$ is called a random field. We will drop dependence on $\omega\in\Omega$ and
+use the notation $X_t(\theta)$, $t\in\mathbb{N}$, $\theta\in D$. A random
+process $X_t$, $t\in\mathbb{N}$ corresponds to a random field where $D$
+is a singleton. A random field is $L^r$-\emph{bounded} for some $r\geq 1$
+if
+$$
+\sup_{n\in\mathbb{N}}\sup_{\theta\in D} E^{1/r}|X_n(\theta)|^r<\infty.
+$$
+
+Now we define conditional $L$-mixing.
+Recall that, for any family $Z_i$, $i\in I$ of real-valued random variables, $\mathrm{ess.}\sup_{i\in I} Z_i$
+denotes a random variable that is an almost sure upper bound for each $Z_i$ and it is a.s.
+smaller than or equal to any other such bound.
+
+
+Let $X_t(\theta)$, $t\in\mathbb{N}$, $\theta\in D$ be a random field
+bounded in $L^r$ for all $r\geq 1$.
+Define, for each $r\geq 1$ and $n\in\mathbb{N}$,
+\begin{eqnarray*}
+	M^{n}_r(X) &:=& \mathrm{ess}\sup_{\theta\in D}\sup_{k \in\mathbb{N}}
+	E^{1/r}[|X_{n+k}(\theta)|^r\big\vert\mathcal{R}_n],\\
+	\gamma^{n}_r(\tau,X)&:=& \mathrm{ess}\sup_{\theta\in D}\sup_{k\geq\tau}
+	E^{1/r}[|X_{n+k}(\theta)-E[X_{n+k}(\theta)\vert \mathcal{R}_{n+k-\tau}^+\vee \mathcal{R}_n]|^r\big\vert
+	\mathcal{R}_n],\ \tau\geq 1,\\
+	\Gamma^{n}_r(X) &:=&\sum_{\tau= 1}^{\infty}\gamma^{n}_r(\tau,X).
+\end{eqnarray*}
+When necessary, we will also use the notations $M^{n}_r(X,D)$,
+$\gamma^{n}_r(\tau,X,D)$, $\Gamma^{n}_r(X,D)$ to signal dependence of
+these quantities on the domain $D$ which may vary.
+
+We call $X_t(\theta)$, $t\in\mathbb{N}$, $\theta\in D$
+\emph{uniformly {conditionally} $L$-mixing} random field
+with respect to $(\mathcal{R}_n,\mathcal{R}_n^+)$, $n\in\mathbb{N}$ if
+it is $L^r$-bounded for all $r\geq 1$; $X_t(\theta)$, $t\in\mathbb{N}$ is adapted to
+$\mathcal{R}_t$, $t\in\mathbb{N}$
+for all $\theta\in D$
+and the sequences  $M^n_r(X)$, $\Gamma^n_r(X)$, $n\in\mathbb{N}$
+are bounded in $L^r$, for each $r\geq 1$. In the case of stochastic processes
+(when $D$ is a singleton)
+the terminology ``conditionally $L$-mixing process'' will be used. 
+Conditionally $L$-mixing encompasses a broad class of processes (linear processes,
+functionals of Markov processes, etc.), see Example 2.1 in \cite{convex}.
+
+The following maximal inequality 
+is pivotal for our arguments.
+
+\begin{theorem}\label{estim} Assume that
+$\mathcal{R}_k:=\sigma(\epsilon_j,\
+j\leq k)$ for some Polish space valued independent random variables $\epsilon_j$, $j\leq k$, $j\in\mathbb{Z}$.
+Fix $r>2$ and $k\in\mathbb{N}$.
+Let $W_n$, $n\in\mathbb{N}$ be a conditionally $L$-mixing process
+w.r.t. $(\mathcal{R}_n,\mathcal{R}_n^+)$, satisfying
+$E[W_n\vert\mathcal{R}_k]=0$ a.s. for all {$n\geq k$}.
+Let $m >k$ and let $b_j$, $k< j\leq m$ be deterministic numbers. Then we have
+\begin{equation}\label{mandrill}
+E^{1/r}\left[ \max_{k < j \le m} \left| \sum_{i = k+1}^{j} b_i W_i \right|^r \big\vert\mathcal{R}_k \right]
+ \le C_{99}(r)\left( \sum_{i=k+1}^{m} b_i^2 \right)^{1/2} \sqrt{{M}_r^{k}(W) \Gamma_r^{k}(W)},
+\end{equation}
+almost surely, where $C_{99}(r)$ is a deterministic constant depending only on $r$ but independent of $k,m$.
+\end{theorem}
+\begin{proof} See Theorem 2.6 of \cite{4} (the $\epsilon_j$ are assumed i.i.d. there but the proof
+trivially works for a merely independent sequence, too).
+\end{proof}
+
+\begin{remark}\label{padi2} {\rm When $X_n$, 
+$n\in\mathbb{N}$ is i.i.d. then one can replace Theorem \ref{estim} by Doob's inequality in
+the arguments of Section \ref{po} above. The full power of Assumption \ref{lip} is
+used only in Lemma \ref{kkk}. If $X_n$ are i.i.d. then Lemma \ref{kkk} is trivial
+and it is enough to assume (A.2) of \cite{raginsky} instead of Assumption \ref{lip}. Also, it is enough to require\ldots Elaborate.}
+\end{remark}
+
+\begin{lemma}\label{below} Let $G_t$,
+$t\in\mathbb{N}$ be conditionally
+$L$-mixing. Let Assumption \ref{lip} hold true. Then,
+for each $i\in\mathbb{N}$, the random field $H(\theta,G_t)$,
+$t\in\mathbb{N}$, $\theta\in B(i)$ is uniformly conditionally $L$-mixing
+with
+\begin{equation}\label{mamma}
+M^n_r(H(\theta,G),B(i))\leq C_{99}(r)[M_r^n(X)+i+1],
+\end{equation}
+and
+\begin{equation}\label{gomma}
+\Gamma^n_r(H(\theta,G),B(i))\leq 2K\Gamma^n_r(X).
+\end{equation}
+\end{lemma}
+\begin{proof} See Lemma 8.2 of \cite{convex}.
+\end{proof}
+
+
+
+\begin{thebibliography}{00}
+
+%\bibitem{ab} Ch. D. Aliprantis, K. C. Border.
+%\newblock Infinite Dimensional Analysis: A Hitchhiker's Guide.
+%\newblock Springer-Verlag Berlin Heidelberg, 2006.
+
+\bibitem{convex} M. Barkhagen, N. H. Chau, \'E. Moulines, M. R\'asonyi,
+S. Sabanis and Y. Zhang.
+\newblock On stochastic gradient Langevin dynamics with stationary data
+streams in the logconcave case.
+\newblock \emph{Preprint}, 2018. arXiv:?????????
+
+\bibitem{4} N. H. Chau, Ch. Kumar, M. R\'asonyi and S. Sabanis.
+\newblock On fixed gain recursive estimators with discontinuity in the parameters.
+\newblock \emph{To appear in ESAIM Probability and Statistics}, 2018. arXiv:1609.05166v4
+
+\bibitem{berkeley} X. Cheng, N. S. Chatterji, Y. Abbasi-Yadkori,
+P. L. Bartlett and M. I. Jordan.
+\newblock Sharp convergence rated for Langevin dynamics in the
+nonconvex setting.
+\newblock \emph{Preprint}, 2018. arXiv:1805.01648v1
+
+\bibitem{dalalyan} A. S. Dalalyan.
+\newblock Theoretical guarantees for approximate sampling from
+smooth and log-concave densities.
+\newblock \emph{Journal of the Royal Statistical Society:
+Series B (Statistical Methodology)}, 79:651--676, 2017.
+
+\bibitem{dm} C. Dellacherie and P.-A. Meyer.
+\newblock \emph{Probabilit\'es et potentiel. Chapitres I \'a IV.}
+\newblock Hermann, Paris, 1975.
+
+\bibitem{unadjusted} A. Durmus and \'E. Moulines.
+\newblock Nonasymptotic convergence analysis for the unadjusted Langevin algorithm.
+\newblock \emph{Ann. Appl. Probab.}, 27:1551--1587, 2017.
+
+\bibitem{aew} A. Durmus and \'E. Moulines.
+\newblock High-dimensional Bayesian inference via the unadjusted Langevin algorithm.
+\newblock \emph{Preprint}, 2018. arXiv:1605.01559v3
+
+\bibitem{eberleold}
+A. Eberle.
+\newblock Reflection couplings and contraction rates for diffusions. 
+\newblock \emph{Probab. Theory Related Fields}, 166:851--886, 2016.
+
+\bibitem{eberle} A. Eberle, A. Guillin and R. Zimmer.
+\newblock Quantitative Harris-type theorems for diffusions and
+McKean-Vlasov processes. \newblock\emph{Preprint}, 2017.
+\newblock arXiv:1606.0612v2
+
+\bibitem{laci1} L. Gerencs\'er.
+\newblock On a class of mixing processes.
+\newblock \emph{Stochastics},  26:165--191, 1989.
+
+\bibitem{ls} R. Liptser and A. N. Shiryaev.
+\newblock\emph{Statistics of random processes.}
+\newblock Springer, ??
+
+\bibitem{alex}
+M. B. Majka, A. Mijatovi\'c and \L. Szpruch.
+\newblock Non-asymptotic bounds for sampling algorithms
+without log-concavity.
+\newblock \emph{Preprint}, 2018. arXiv:1808.07105v1
+
+\bibitem{raginsky}
+M. Raginsky, A. Rakhlin, and M. Telgarsky.
+\newblock Non-convex learning via Stochastic Gradient Langevin Dynamics: a nonasymptotic analysis.
+\newblock \emph{Proceedings of Machine Learning Research}, 65:1674--1703, 2017. 
+
+\bibitem{villani} C. Villani.
+\newblock \emph{Optimal transport. Old an new.}
+\newblock Springer, 2009.
+
+\bibitem{xu} P. Xu, J. Chen, D. Zhou and Q. Gu.
+\newblock Global convergence of Langevin dynamics based
+algorithms for nonconvex optimization.
+\newblock \emph{Preprint}, 2018. arXiv:1707.06618v1
+
+\end{thebibliography}
+
+
+\end{document}
+
+We can estimate, using Jensen's inequality, Assumption \ref{lip},
+\begin{eqnarray*}
+& & E|\hat{Y}^{\lambda}_{lT}(\mathbf{x})-{Y}^{\lambda}_{(l-1)T}(\mathbf{x})|^{p_2}\\
+&\leq& E\left\vert\int_{(l-1)T}^{lT} \lambda\left[H(\hat{Y}^{\lambda}_t(\mathbf{x}),x_{\lfloor t\rfloor})-H(Y^{\lambda}_{\lfloor t\rfloor}(\mathbf{x}),x_{\lfloor t\rfloor})\right]\, dt\right\vert^{p_2}\\
+&\leq& E\int_{(l-1)T}^{lT} \lambda^{p_2}|H(\hat{Y}^{\lambda}_t(\mathbf{x}),x_{\lfloor t\rfloor})-H(Y^{\lambda}_{\lfloor t\rfloor}(\mathbf{x}),x_{\lfloor t\rfloor})|^{p_2}\, dt\\
+&\leq& \lambda^{2p_2}K^{p_2}\int_{(l-1)T}^{lT} 
+E|\hat{Y}^{\lambda}_t(\mathbf{x})-{Y}^{\lambda}_{\lfloor t\rfloor}(\mathbf{x})|^{p_2}\, dt\\
+&\leq& \lambda^{p_2}K^{p_2}\int_{(l-1)T}^{lT} 2^{p_2-1}E[|\hat{Y}^{\lambda}_t(\mathbf{x})|^{p_2}+
+|{Y}^{\lambda}_{\rfloor t\lfloor}(\mathbf{x})|^{p_2}]\, dt\\
+&\leq& T(2\lambda K)^{p_2} T\sup_{t\in [\lfloor (l-1)T\rfloor,lT]}
+E[V_{p_2}(\hat{Y}^{\lambda}_t(\mathbf{x}))
++V_{p_2}({Y}^{\lambda}_{t}(\mathbf{x}))].
+\end{eqnarray*}
+This implies that
+$$
+\tilde{W}_{p_2}(\tilde{R}^T(x_l)R^T(x_{l-1})\cdots R^T(x_0)\nu_0,
+{R}^T(x_{l})
+\cdots {R}^T(x_0)\nu_0)\leq C_{22}\sqrt{\lambda^2 T}=C_{22}(p_2)\lambda^{(p_2-1)/p_2}.
+$$
+for some $C_{22}(p_2)$. Choose $p_2$ so large that $(p_2-1)/p_2=1-\epsilon$.
+\end{proof}
+
+
